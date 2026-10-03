@@ -1,0 +1,128 @@
+<div class="noir-sheet">
+  <header class="sheet-header">
+    <img class="portrait" src="{{actor.img}}" data-edit="img" data-action="editImage" alt="">
+    <div class="head-fields">
+      <input class="name" type="text" name="name" value="{{actor.name}}" placeholder="{{localize 'NOIR.Name'}}">
+      <div class="row">
+        <label>{{localize "NOIR.Level"}} <input type="number" name="system.details.level" value="{{system.details.level}}"></label>
+        {{#if isNpc}}
+          <label>{{localize "NOIR.CR"}} <input type="text" name="system.cr" value="{{system.cr}}"></label>
+          <label>{{localize "NOIR.AC"}} <input type="number" name="system.acFlat" value="{{system.acFlat}}"></label>
+        {{else}}
+                    <label>{{localize "NOIR.Vice"}} <input type="text" list="noir-vices" name="system.details.vice" value="{{system.details.vice}}"><datalist id="noir-vices">{{#each vices}}<option value="{{this}}">{{/each}}</datalist></label>
+          <label>{{localize "NOIR.Drive"}} <input type="text" list="noir-drives" name="system.details.drive" value="{{system.details.drive}}"><datalist id="noir-drives">{{#each drives}}<option value="{{this}}">{{/each}}</datalist></label>
+        {{/if}}
+      </div>
+      <div class="row"><label>{{localize "NOIR.Speed"}} <input type="number" step="0.5" name="system.speed" value="{{system.speed}}"></label></div>
+      <div class="origin">
+        {{#each origin}}<a class="tag" data-item-id="{{id}}" data-action="editItem">{{type}}: {{name}}</a>{{/each}}
+      </div>
+    </div>
+  </header>
+
+  <section class="vitals">
+    <div class="stat"><label>{{localize "NOIR.HP"}}</label>
+      <span><input type="number" name="system.hp.value" value="{{system.hp.value}}"> / <input type="number" name="system.hp.max" value="{{system.hp.max}}"></span>
+      <small>{{localize "NOIR.Temp"}} <input type="number" name="system.hp.temp" value="{{system.hp.temp}}"></small></div>
+    <div class="stat"><label>{{localize "NOIR.AC"}}</label><b>{{system.ac}}</b></div>
+    <div class="stat"><label>{{localize "NOIR.Prof"}}</label><b>{{numberFormat system.prof sign=true}}</b></div>
+    <div class="stat"><label>{{localize "NOIR.Nerve"}}</label>
+      <span><input type="number" name="system.nerve.value" value="{{system.nerve.value}}"> / {{system.nerve.max}}</span></div>
+    <div class="stat heat"><label>{{localize "NOIR.Heat"}}</label><input type="number" name="system.heat" value="{{system.heat}}" min="0" max="5"></div>
+    <div class="stat"><label>{{localize "NOIR.Cash"}}</label><input type="number" name="system.cash" value="{{system.cash}}"></div>
+    <div class="stat"><label>{{localize "NOIR.Luck"}}</label><input type="checkbox" name="system.luck" {{checked system.luck}}></div>
+    <div class="stat"><label>{{localize "NOIR.Passive"}}</label><b>{{system.passive}}</b></div>
+  </section>
+  {{#unless isNpc}}
+  <section class="advance">
+    <div class="xp-head"><b>{{localize "NOIR.Experience"}}</b> {{system.details.xp}} / {{xpNeed}}</div>
+    <div class="marks">{{#each xpMarks}}<a class="mark {{#if on}}on{{/if}}" data-action="setMark" data-index="{{i}}"></a>{{/each}}</div>
+    <div class="buttons">
+      <button type="button" data-action="markXp" data-source="motive">{{localize "NOIR.XpSource.motive"}}</button>
+      <button type="button" data-action="markXp" data-source="scene">{{localize "NOIR.XpSource.scene"}}</button>
+      <button type="button" data-action="markXp" data-source="complication">{{localize "NOIR.XpSource.complication"}}</button>
+      <button type="button" data-action="indulge">{{localize "NOIR.Indulge"}}</button>
+      {{#if canAdvance}}<button type="button" class="level-up" data-action="advance">{{localize "NOIR.Advance"}}</button>{{/if}}
+    </div>
+  </section>
+  {{/unless}}
+  <p class="hint">{{localize "NOIR.ShiftHint"}}</p>
+
+  <div class="sheet-body">
+    <section class="cols">
+      <div class="col">
+        <h3>{{localize "NOIR.Abilities"}}</h3>
+        {{#each abilities}}
+        <div class="ability">
+          <a class="label" data-action="rollAbility" data-ability="{{key}}">{{label}}</a>
+          <input type="number" name="system.abilities.{{key}}.value" value="{{value}}">
+          <span class="mod">{{numberFormat mod sign=true}}</span>
+          <input type="checkbox" name="system.abilities.{{key}}.saveProf" {{checked saveProf}} title="{{localize 'NOIR.Save'}}">
+          <a class="save" data-action="rollSave" data-ability="{{key}}">{{localize "NOIR.Save"}} {{numberFormat save sign=true}}</a>
+        </div>
+        {{/each}}
+      </div>
+      <div class="col">
+        <h3>{{localize "NOIR.Skills"}}</h3>
+        {{#each skills}}
+        <div class="skill">
+          <a class="prof p{{prof}}" data-action="toggleSkill" data-skill="{{key}}"></a>
+          <a class="sname" data-action="rollSkill" data-skill="{{key}}">{{label}} <small>{{abil}}</small></a>
+          <span class="mod">{{numberFormat total sign=true}}</span>
+        </div>
+        {{/each}}
+      </div>
+    </section>
+
+    <h3>{{localize "NOIR.Weapons"}} <a data-action="createItem" data-type="weapon">＋</a></h3>
+    {{#each weapons}}
+    <div class="item" data-item-id="{{id}}">
+      <a class="iname" data-action="editItem">{{name}}</a>
+      <span>{{system.damage}} {{system.damageType}}</span>
+      {{#if system.ammo.max}}<span>{{system.ammo.value}}/{{system.ammo.max}}</span><a data-action="reload" title="{{localize 'NOIR.Reload'}}">⟳</a>{{/if}}
+      <a data-action="rollAttack">{{localize "NOIR.Attack"}}</a>
+      <a data-action="rollDamage">{{localize "NOIR.Damage"}}</a>
+      <a data-action="deleteItem">✕</a>
+    </div>
+    {{/each}}
+
+    <h3>{{localize "NOIR.Armor"}} <a data-action="createItem" data-type="armor">＋</a></h3>
+    {{#each armor}}
+    <div class="item" data-item-id="{{id}}">
+      <a class="iname" data-action="editItem">{{name}}</a>
+      <span>{{localize "NOIR.AC"}} {{system.ac}}</span>
+      <a data-action="toggleEquip" class="{{#if system.equipped}}on{{/if}}">{{#if system.equipped}}● {{localize "NOIR.Equipped"}}{{else}}○{{/if}}</a>
+      <a data-action="deleteItem">✕</a>
+    </div>
+    {{/each}}
+
+    <h3>{{localize "NOIR.Gear"}} <a data-action="createItem" data-type="gear">＋</a></h3>
+    {{#each gear}}
+    <div class="item" data-item-id="{{id}}">
+      <a class="iname" data-action="editItem">{{name}}</a>
+      <span>×{{system.quantity}}</span>
+      <a data-action="useItem">{{localize "NOIR.Use"}}</a>
+      <a data-action="deleteItem">✕</a>
+    </div>
+    {{/each}}
+
+    <h3>{{localize "NOIR.Features"}} <a data-action="createItem" data-type="feature">＋</a></h3>
+    {{#each features}}
+    <div class="item" data-item-id="{{id}}">
+      <a class="iname" data-action="editItem">{{name}}</a>
+      <span>{{system.cost}}</span>
+      <a data-action="useItem">{{localize "NOIR.Use"}}</a>
+      <a data-action="deleteItem">✕</a>
+    </div>
+    {{/each}}
+
+    <h3>{{localize "NOIR.Scars"}} / {{localize "NOIR.Debts"}}</h3>
+    <div class="cols">
+      <textarea name="system.details.scars" rows="3">{{system.details.scars}}</textarea>
+      <textarea name="system.details.debts" rows="3">{{system.details.debts}}</textarea>
+    </div>
+
+    <h3>{{localize "NOIR.Biography"}}</h3>
+    <prose-mirror name="system.biography" value="{{system.biography}}" toggled="true" collaborate="false">{{{bio}}}</prose-mirror>
+  </div>
+</div>

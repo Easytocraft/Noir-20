@@ -1,0 +1,16 @@
+{
+  "name": "noir-d20",
+  "version": "0.4.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "validate": "node tools/validate.mjs",
+    "smoke": "node tools/smoke.mjs",
+    "test": "node tools/validate.mjs && node tools/smoke.mjs",
+    "packs": "node tools/build-packs.mjs",
+    "packs:source": "node tools/build-packs.mjs --source-only"
+  },
+  "devDependencies": {
+    "@foundryvtt/foundryvtt-cli": "^2.0.0"
+  }
+}

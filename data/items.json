@@ -1,0 +1,413 @@
+[
+ {
+  "name": "Кастет",
+  "type": "weapon",
+  "system": {
+   "damage": "1d4",
+   "damageType": "дробящий",
+   "ability": "str",
+   "range": "",
+   "properties": "Лёгкое",
+   "ammo": {
+    "value": 0,
+    "max": 0
+   },
+   "weight": 0.5,
+   "price": 2,
+   "description": "<p>Кулак, который помнят.</p>"
+  }
+ },
+ {
+  "name": "Финка",
+  "type": "weapon",
+  "system": {
+   "damage": "1d4",
+   "damageType": "колющий",
+   "ability": "finesse",
+   "range": "6/18 м",
+   "properties": "Лёгкое, метательное",
+   "ammo": {
+    "value": 0,
+    "max": 0
+   },
+   "weight": 0.5,
+   "price": 3,
+   "description": "<p>Узкий нож для узких переулков.</p>"
+  }
+ },
+ {
+  "name": "Бритва",
+  "type": "weapon",
+  "system": {
+   "damage": "1d4",
+   "damageType": "рубящий",
+   "ability": "finesse",
+   "range": "",
+   "properties": "Лёгкое, скрытое",
+   "ammo": {
+    "value": 0,
+    "max": 0
+   },
+   "weight": 0.2,
+   "price": 2,
+   "description": "<p>Аккуратная работа.</p>"
+  }
+ },
+ {
+  "name": "Дубинка",
+  "type": "weapon",
+  "system": {
+   "damage": "1d6",
+   "damageType": "дробящий",
+   "ability": "str",
+   "range": "",
+   "properties": "Можно нанести несмертельный урон",
+   "ammo": {
+    "value": 0,
+    "max": 0
+   },
+   "weight": 1,
+   "price": 2,
+   "description": "<p>Полицейский аргумент.</p>"
+  }
+ },
+ {
+  "name": "Бейсбольная бита",
+  "type": "weapon",
+  "system": {
+   "damage": "1d8",
+   "damageType": "дробящий",
+   "ability": "str",
+   "range": "",
+   "properties": "Двуручное",
+   "ammo": {
+    "value": 0,
+    "max": 0
+   },
+   "weight": 1.5,
+   "price": 3,
+   "description": "<p>Только по мячу, конечно.</p>"
+  }
+ },
+ {
+  "name": "Трость со шпагой",
+  "type": "weapon",
+  "system": {
+   "damage": "1d6",
+   "damageType": "колющий",
+   "ability": "finesse",
+   "range": "",
+   "properties": "Скрытое",
+   "ammo": {
+    "value": 0,
+    "max": 0
+   },
+   "weight": 1,
+   "price": 15,
+   "description": "<p>Элегантность со стальным сердцем.</p>"
+  }
+ },
+ {
+  "name": "Револьвер .38",
+  "type": "weapon",
+  "system": {
+   "damage": "1d8",
+   "damageType": "баллистический",
+   "ability": "dex",
+   "range": "18/54 м",
+   "properties": "Обойма 6",
+   "ammo": {
+    "value": 6,
+    "max": 6
+   },
+   "weight": 1,
+   "price": 25,
+   "description": "<p>Рабочая лошадка сыщиков и полисменов.</p>"
+  }
+ },
+ {
+  "name": "Дерринджер",
+  "type": "weapon",
+  "system": {
+   "damage": "1d6",
+   "damageType": "баллистический",
+   "ability": "dex",
+   "range": "9/27 м",
+   "properties": "Обойма 2, скрытое",
+   "ammo": {
+    "value": 2,
+    "max": 2
+   },
+   "weight": 0.3,
+   "price": 12,
+   "description": "<p>Карманная защита.</p>"
+  }
+ },
+ {
+  "name": "Автоматический пистолет .45",
+  "type": "weapon",
+  "system": {
+   "damage": "1d10",
+   "damageType": "баллистический",
+   "ability": "dex",
+   "range": "18/54 м",
+   "properties": "Обойма 8",
+   "ammo": {
+    "value": 8,
+    "max": 8
+   },
+   "weight": 1.2,
+   "price": 35,
+   "description": "<p>Тяжёлый и громкий.</p>"
+  }
+ },
+ {
+  "name": "Обрез",
+  "type": "weapon",
+  "system": {
+   "damage": "2d6",
+   "damageType": "баллистический",
+   "ability": "dex",
+   "range": "9/18 м",
+   "properties": "Обойма 2, по цели на 3 м",
+   "ammo": {
+    "value": 2,
+    "max": 2
+   },
+   "weight": 2,
+   "price": 30,
+   "description": "<p>Вежливо, но убедительно.</p>"
+  }
+ },
+ {
+  "name": "Охотничья винтовка",
+  "type": "weapon",
+  "system": {
+   "damage": "1d12",
+   "damageType": "баллистический",
+   "ability": "dex",
+   "range": "45/150 м",
+   "properties": "Обойма 5, двуручное",
+   "ammo": {
+    "value": 5,
+    "max": 5
+   },
+   "weight": 3.5,
+   "price": 40,
+   "description": "<p>Для тех, кто любит дистанцию.</p>"
+  }
+ },
+ {
+  "name": "Пистолет-пулемёт «Томми»",
+  "type": "weapon",
+  "system": {
+   "damage": "1d10",
+   "damageType": "баллистический",
+   "ability": "dex",
+   "range": "18/54 м",
+   "properties": "Обойма 20, очередь (5 патр.: -2 к КД цели)",
+   "ammo": {
+    "value": 20,
+    "max": 20
+   },
+   "weight": 5,
+   "price": 120,
+   "description": "<p>Рэкетирский аргумент.</p>"
+  }
+ },
+ {
+  "name": "Кожаный плащ",
+  "type": "armor",
+  "system": {
+   "kind": "armor",
+   "ac": 11,
+   "maxDex": null,
+   "stealthDis": false,
+   "weight": 2,
+   "price": 10,
+   "description": "<p>Лёгкая броня.</p>"
+  }
+ },
+ {
+  "name": "Тренч с подкладкой",
+  "type": "armor",
+  "system": {
+   "kind": "armor",
+   "ac": 12,
+   "maxDex": null,
+   "stealthDis": false,
+   "weight": 3,
+   "price": 25,
+   "description": "<p>Лёгкая броня, подбита стальной сеткой.</p>"
+  }
+ },
+ {
+  "name": "Бронежилет «Стальная сорочка»",
+  "type": "armor",
+  "system": {
+   "kind": "armor",
+   "ac": 14,
+   "maxDex": 2,
+   "stealthDis": false,
+   "weight": 6,
+   "price": 80,
+   "description": "<p>Средняя броня.</p>"
+  }
+ },
+ {
+  "name": "Тяжёлый полицейский жилет",
+  "type": "armor",
+  "system": {
+   "kind": "armor",
+   "ac": 16,
+   "maxDex": 0,
+   "stealthDis": true,
+   "weight": 12,
+   "price": 150,
+   "description": "<p>Тяжёлая броня, помеха на Скрытность.</p>"
+  }
+ },
+ {
+  "name": "Стальной портфель",
+  "type": "armor",
+  "system": {
+   "kind": "shield",
+   "ac": 1,
+   "maxDex": null,
+   "stealthDis": false,
+   "weight": 3,
+   "price": 20,
+   "description": "<p>Щит: +1 к КД.</p>"
+  }
+ },
+ {
+  "name": "Отмычки",
+  "type": "gear",
+  "system": {
+   "quantity": 1,
+   "weight": 0.2,
+   "price": 5,
+   "description": "<p>Воровской инструмент.</p>"
+  }
+ },
+ {
+  "name": "Фотоаппарат «Лейка»",
+  "type": "gear",
+  "system": {
+   "quantity": 1,
+   "weight": 1,
+   "price": 30,
+   "description": "<p>Вспышка, плёнка на 24 кадра.</p>"
+  }
+ },
+ {
+  "name": "Бутылка виски",
+  "type": "gear",
+  "system": {
+   "quantity": 3,
+   "weight": 1,
+   "price": 3,
+   "description": "<p>Съешьте… то есть выпейте глоток: восстановите 1d4 Нерва, но следующая проверка Восприятия с помехой.</p>"
+  }
+ },
+ {
+  "name": "Пачка сигарет",
+  "type": "gear",
+  "system": {
+   "quantity": 10,
+   "weight": 0.1,
+   "price": 1,
+   "description": "<p>Затяжка: восстановите 1 Нерв (раз в сцену).</p>"
+  }
+ },
+ {
+  "name": "Аптечка (бинты и йод)",
+  "type": "gear",
+  "system": {
+   "quantity": 3,
+   "weight": 1,
+   "price": 10,
+   "description": "<p>3 порции. Лечит 1d6 хитов (действие).</p>"
+  }
+ },
+ {
+  "name": "Фонарик",
+  "type": "gear",
+  "system": {
+   "quantity": 1,
+   "weight": 0.5,
+   "price": 3,
+   "description": "<p>Свет 9 м.</p>"
+  }
+ },
+ {
+  "name": "Блокнот и карандаш",
+  "type": "gear",
+  "system": {
+   "quantity": 1,
+   "weight": 0.2,
+   "price": 1,
+   "description": "<p>Для улик.</p>"
+  }
+ },
+ {
+  "name": "Наручники",
+  "type": "gear",
+  "system": {
+   "quantity": 1,
+   "weight": 0.5,
+   "price": 4,
+   "description": "<p>Заковывают существо Среднего размера.</p>"
+  }
+ },
+ {
+  "name": "Проволочный диктофон",
+  "type": "gear",
+  "system": {
+   "quantity": 1,
+   "weight": 2,
+   "price": 40,
+   "description": "<p>Записывает до 30 минут.</p>"
+  }
+ },
+ {
+  "name": "Фальшивые документы",
+  "type": "gear",
+  "system": {
+   "quantity": 1,
+   "weight": 0,
+   "price": 20,
+   "description": "<p>Преимущество на Обман при проверке документов один раз.</p>"
+  }
+ },
+ {
+  "name": "Монтировка",
+  "type": "gear",
+  "system": {
+   "quantity": 1,
+   "weight": 2,
+   "price": 3,
+   "description": "<p>Преимущество на Силу для вскрытия.</p>"
+  }
+ },
+ {
+  "name": "Бинокль",
+  "type": "gear",
+  "system": {
+   "quantity": 1,
+   "weight": 1,
+   "price": 15,
+   "description": "<p>Видите вдвое дальше.</p>"
+  }
+ },
+ {
+  "name": "Коробка патронов",
+  "type": "gear",
+  "system": {
+   "quantity": 1,
+   "weight": 1,
+   "price": 5,
+   "description": "<p>12 патронов; используйте на перезарядку.</p>"
+  }
+ }
+]

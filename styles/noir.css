@@ -1,0 +1,45 @@
+.noir { --ink:#d8d0bd; --ink-dim:#8d8672; --bg:#14151a; --bg2:#1d1f26; --blood:#a8322d; --amber:#c9a24a; --line:#34363f; }
+.noir .window-content { background: repeating-linear-gradient(172deg,#14151a 0 14px,#17181e 14px 18px); color: var(--ink); padding: 8px; font-family: Georgia, "Palatino Linotype", serif; }
+.noir h3 { font-family: "American Typewriter","Courier New",monospace; text-transform: uppercase; letter-spacing: .12em; color: var(--amber); border-bottom: 1px solid var(--blood); margin: 14px 0 6px; font-size: 13px; }
+.noir h3 a { float: right; color: var(--blood); }
+.noir a { color: var(--ink); cursor: pointer; } .noir a:hover { color: var(--amber); text-shadow: 0 0 6px var(--amber); }
+.noir input, .noir select { background: var(--bg2); color: var(--ink); border: 1px solid var(--line); border-radius: 0; font-family: "Courier New", monospace; }
+.noir input[type=number] { width: 52px; text-align: center; }
+.noir .noir-sheet { display: flex; flex-direction: column; height: 100%; }
+.noir .sheet-header { display: flex; gap: 10px; border-bottom: 2px solid var(--blood); padding-bottom: 8px; }
+.noir .portrait { width: 96px; height: 96px; object-fit: cover; filter: grayscale(1) contrast(1.15); border: 1px solid var(--ink-dim); }
+.noir .portrait.small { width: 56px; height: 56px; }
+.noir .head-fields { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+.noir input.name { font-size: 24px; height: 36px; font-family: "American Typewriter","Courier New",monospace; background: transparent; border: none; border-bottom: 1px dashed var(--ink-dim); color: var(--ink); }
+.noir .row { display: flex; gap: 8px; flex-wrap: wrap; font-size: 11px; color: var(--ink-dim); }
+.noir .row input[type=text] { width: 120px; }
+.noir .tag { font-size: 11px; background: var(--bg2); border: 1px solid var(--line); padding: 1px 6px; margin-right: 4px; }
+.noir .vitals { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 8px; }
+.noir .stat { background: var(--bg2); border: 1px solid var(--line); text-align: center; padding: 4px; display: flex; flex-direction: column; align-items: center; }
+.noir .stat label { font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-dim); }
+.noir .stat b { font-size: 22px; color: var(--amber); } .noir .stat.heat input { color: var(--blood); font-weight: bold; }
+.noir .hint { font-size: 10px; color: var(--ink-dim); margin: 4px 0 0; text-align: right; }
+.noir .sheet-body { overflow-y: auto; flex: 1; padding-right: 4px; }
+.noir .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.noir .ability, .noir .skill, .noir .item { display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--line); padding: 2px 0; font-size: 13px; }
+.noir .ability .label, .noir .iname, .noir .sname { flex: 1; }
+.noir .mod { font-family: "Courier New", monospace; color: var(--amber); min-width: 28px; text-align: right; }
+.noir .skill small { color: var(--ink-dim); font-size: 10px; }
+.noir .prof { width: 12px; height: 12px; border: 1px solid var(--ink-dim); border-radius: 50%; display: inline-block; }
+.noir .prof.p1 { background: var(--amber); } .noir .prof.p2 { background: var(--blood); border-color: var(--blood); box-shadow: 0 0 5px var(--blood); }
+.noir .item .on { color: var(--amber); }
+.noir .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.noir .fields label { display: flex; flex-direction: column; font-size: 11px; color: var(--ink-dim); }
+.noir .fields label.wide { grid-column: 1 / -1; }
+.noir prose-mirror { min-height: 120px; color: var(--ink); }
+.noir .advance { margin-top: 8px; background: var(--bg2); border: 1px solid var(--line); padding: 6px 8px; }
+.noir .xp-head { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-dim); }
+.noir .xp-head b { color: var(--amber); margin-right: 6px; }
+.noir .marks { display: flex; flex-wrap: wrap; gap: 4px; margin: 6px 0; }
+.noir .mark { width: 16px; height: 16px; border: 1px solid var(--ink-dim); transform: rotate(45deg); display: inline-block; }
+.noir .mark.on { background: var(--amber); border-color: var(--amber); box-shadow: 0 0 6px var(--amber); }
+.noir .buttons { display: flex; flex-wrap: wrap; gap: 4px; }
+.noir .buttons button { flex: 1 1 auto; background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 0; font-family: "Courier New", monospace; font-size: 11px; line-height: 22px; }
+.noir .buttons button:hover { border-color: var(--amber); color: var(--amber); }
+.noir .buttons .level-up { background: var(--blood); border-color: var(--blood); color: #fff; }
+.noir textarea { background: var(--bg2); color: var(--ink); border: 1px solid var(--line); border-radius: 0; font-family: "Courier New", monospace; }
