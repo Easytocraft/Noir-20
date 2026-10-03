@@ -1,0 +1,31 @@
+# Кладите в репозиторий по пути .github/workflows/release.yml
+# Запуск: на GitHub создайте релиз с тегом вида v0.4.0 — workflow соберёт zip и system.json.
+name: Release
+on:
+  release:
+    types: [published]
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm install
+      - run: npm test
+      - run: npm run packs
+      - name: Подставить версию и ссылки в манифест
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          URL=https://github.com/${{ github.repository }}
+          jq --arg v "$VERSION" --arg u "$URL" --arg t "$GITHUB_REF_NAME" \
+            '.version=$v | .url=$u | .manifest=($u+"/releases/latest/download/system.json") | .download=($u+"/releases/download/"+$t+"/noir-d20.zip") | .bugs=($u+"/issues")' \
+            system.json > system.tmp && mv system.tmp system.json
+      - run: zip -r noir-d20.zip system.json LICENSE README.md CHANGELOG.md module templates styles lang data packs
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            system.json
+            noir-d20.zip
