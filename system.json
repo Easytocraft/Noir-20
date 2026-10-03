@@ -25,6 +25,8 @@
       "path": "lang/ru.json"
     }
   ],
+  "manifest": "https://raw.githubusercontent.com/Easytocraft/Noir-20/main/system.json",
+  "download": "https://github.com/Easytocraft/Noir-20/archive/refs/heads/main.zip",
   "documentTypes": {
     "Actor": {
       "character": {
