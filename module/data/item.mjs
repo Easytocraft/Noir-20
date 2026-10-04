@@ -1,7 +1,9 @@
+import { NOIR } from "../config.mjs";
 const f = foundry.data.fields;
 const num = (initial = 0, extra = {}) => new f.NumberField({ required: true, integer: true, initial, ...extra });
 const money = () => new f.NumberField({ required: true, initial: 0, min: 0 });
 const desc = () => ({ description: new f.HTMLField() });
+const six = () => new f.SchemaField(Object.fromEntries(Object.keys(NOIR.abilities).map(k => [k, num(0)])));
 
 export class WeaponData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
@@ -12,7 +14,6 @@ export class WeaponData extends foundry.abstract.TypeDataModel {
       ability: new f.StringField({ initial: "dex", choices: ["str", "dex", "finesse"] }),
       range: new f.StringField({ initial: "" }),
       properties: new f.StringField({ initial: "" }),
-      proficient: new f.BooleanField({ initial: true }),
       attackBonus: num(0),
       ammo: new f.SchemaField({ value: num(0, { min: 0 }), max: num(0, { min: 0 }) }),
       equipped: new f.BooleanField({ initial: true }),
@@ -26,9 +27,8 @@ export class ArmorData extends foundry.abstract.TypeDataModel {
     return {
       ...desc(),
       kind: new f.StringField({ initial: "armor", choices: ["armor", "shield"] }),
-      ac: num(11, { min: 0 }),
-      maxDex: new f.NumberField({ integer: true, nullable: true, initial: null }),
-      stealthDis: new f.BooleanField({ initial: false }),
+      protection: num(1, { min: 0 }),   // прибавка к порогам урона
+      evasion: num(0),                  // поправка к Уклонению
       equipped: new f.BooleanField({ initial: false }),
       weight: money(), price: money()
     };
@@ -43,16 +43,7 @@ export class GearData extends foundry.abstract.TypeDataModel {
 
 export class ClassData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
-    return {
-      ...desc(),
-      hitDie: new f.StringField({ initial: "d8" }),
-      saves: new f.StringField({ initial: "" }),
-      proficiencies: new f.StringField({ initial: "" }),
-      skills: new f.StringField({ initial: "" }),
-      saveKeys: new f.ArrayField(new f.StringField()),
-      skillKeys: new f.ArrayField(new f.StringField()),
-      skillCount: num(0, { min: 0 })
-    };
+    return { ...desc(), focus: new f.StringField({ initial: "" }), stats: six() };
   }
 }
 
@@ -62,12 +53,10 @@ export class SpeciesData extends foundry.abstract.TypeDataModel {
       ...desc(),
       asi: new f.StringField({ initial: "" }),
       size: new f.StringField({ initial: "Средний" }),
-      speed: new f.NumberField({ required: true, initial: 9, min: 0 }),
-      bonuses: new f.SchemaField(Object.fromEntries(["str", "dex", "con", "int", "wis", "cha"].map(k => [k, num(0)]))),
+      bonuses: six(),
       freeAsi: num(0, { min: 0 }),
       freeFrom: new f.ArrayField(new f.StringField()),
-      freeSkills: num(0, { min: 0 }),
-      nerveBonus: num(0)
+      evasion: num(0), wounds: num(0), stressBonus: num(0)
     };
   }
 }
@@ -76,10 +65,7 @@ export class BackgroundData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
       ...desc(),
-      skills: new f.StringField({ initial: "" }),
-      tools: new f.StringField({ initial: "" }),
       equipment: new f.StringField({ initial: "" }),
-      skillKeys: new f.ArrayField(new f.StringField()),
       startItems: new f.ArrayField(new f.StringField()),
       startCash: num(0, { min: 0 })
     };
@@ -88,12 +74,7 @@ export class BackgroundData extends foundry.abstract.TypeDataModel {
 
 export class FeatureData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
-    return {
-      ...desc(),
-      level: num(1, { min: 0, max: 20 }),
-      source: new f.StringField({ initial: "" }),
-      cost: new f.StringField({ initial: "" })
-    };
+    return { ...desc(), level: num(1, { min: 0, max: 20 }), source: new f.StringField({ initial: "" }), cost: new f.StringField({ initial: "" }) };
   }
 }
 

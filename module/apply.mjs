@@ -2,27 +2,15 @@ import { NOIR } from "./config.mjs";
 const MOD = "noir-d20";
 const L = k => game.i18n.localize(k);
 const ABIL = Object.keys(NOIR.abilities);
-const skillOpts = keys => Object.fromEntries(keys.map(k => [k, L(NOIR.skills[k].label)]));
 const abilOpts = keys => Object.fromEntries(keys.map(k => [k, L(NOIR.abilities[k])]));
-const sel = (name, opts) => `<select name="${name}">${Object.entries(opts).map(([k, v]) => `<option value="${k}">${v}</option>`).join("")}</select>`;
-const FormData = () => foundry.applications.ux.FormDataExtended;
+const sel = (name, opts, selected) => `<select name="${name}">${Object.entries(opts).map(([k, v]) => `<option value="${k}"${String(k) === String(selected) ? " selected" : ""}>${v}</option>`).join("")}</select>`;
+const FD = () => foundry.applications.ux.FormDataExtended;
+const sign = n => (n > 0 ? `+${n}` : `${n}`);
+const ask = (title, content, label = "OK") => foundry.applications.api.DialogV2.prompt({
+  window: { title }, content, ok: { label, callback: (ev, btn) => new (FD())(btn.form).object }, rejectClose: false
+});
 
-/** Диалог выбора N пунктов из списка. */
-async function choose(hint, options, count) {
-  const keys = Object.keys(options);
-  if (!count || !keys.length) return [];
-  if (keys.length <= count) return keys;
-  const boxes = keys.map(k => `<label style="display:block"><input type="checkbox" name="${k}"> ${options[k]}</label>`).join("");
-  const res = await foundry.applications.api.DialogV2.prompt({
-    window: { title: L("NOIR.PickTitle") },
-    content: `<p>${hint} (${count})</p><div>${boxes}</div>`,
-    ok: { label: "OK", callback: (ev, btn) => { const fd = new (FormData())(btn.form).object; return keys.filter(k => fd[k]); } },
-    rejectClose: false
-  });
-  return (res ?? []).slice(0, count);
-}
-
-const emptyDelta = () => ({ abilities: {}, skills: {}, saves: [], hp: 0, nerve: 0, speedPrev: null, cash: 0 });
+const emptyDelta = () => ({ abilities: {}, stress: 0, evasion: 0, wounds: 0, cash: 0 });
 const clone = (doc, extra = {}) => { const o = doc.toObject(); delete o._id; return foundry.utils.mergeObject(o, extra); };
 
 async function packDocs(name) {
@@ -33,31 +21,26 @@ async function packDocs(name) {
 
 async function commit(actor, src, d, grants = []) {
   const s = actor.system, upd = {};
-  for (const [k, n] of Object.entries(d.abilities)) upd[`system.abilities.${k}.value`] = s.abilities[k].value + n;
-  for (const [k, prev] of Object.entries(d.skills)) upd[`system.skills.${k}.prof`] = Math.max(prev, 1);
-  for (const k of d.saves) upd[`system.abilities.${k}.saveProf`] = true;
-  if (d.hp) { upd["system.hp.max"] = s.hp.max + d.hp; upd["system.hp.value"] = s.hp.value + d.hp; }
-  if (d.nerve) upd["system.nerveBonus"] = s.nerveBonus + d.nerve;
-  if (d.speedSet != null) upd["system.speed"] = d.speedSet;
+  for (const [k, n] of Object.entries(d.abilities)) upd[`system.abilities.${k}.value`] = Math.min(NOIR.statMax, s.abilities[k].value + n);
+  if (d.stress) upd["system.stressBonus"] = s.stressBonus + d.stress;
+  if (d.evasion) upd["system.evasionBonus"] = s.evasionBonus + d.evasion;
+  if (d.wounds) upd["system.woundsBonus"] = s.woundsBonus + d.wounds;
   if (d.cash) upd["system.cash"] = s.cash + d.cash;
   if (Object.keys(upd).length) await actor.update(upd, { noirSkip: true });
   const [created] = await actor.createEmbeddedDocuments("Item", [clone(src, { flags: { [MOD]: { delta: d } } })]);
   if (grants.length) await actor.createEmbeddedDocuments("Item", grants.map(g => clone(g, { flags: { [MOD]: { grantedBy: created.id } } })));
-  ui.notifications.info(game.i18n.format("NOIR.Applied", { name: src.name, actor: actor.name }));
   return created;
 }
 
-/** Откатывает всё, что применили класс, раса, происхождение или подкласс. */
+/** Откатывает всё, что применили раса, происхождение, класс или подкласс. */
 export async function revert(actor, item) {
   const d = item.getFlag(MOD, "delta");
   if (d) {
     const s = actor.system, upd = {};
-    for (const [k, n] of Object.entries(d.abilities)) upd[`system.abilities.${k}.value`] = Math.max(1, s.abilities[k].value - n);
-    for (const [k, prev] of Object.entries(d.skills)) upd[`system.skills.${k}.prof`] = prev;
-    for (const k of d.saves) upd[`system.abilities.${k}.saveProf`] = false;
-    if (d.hp) { upd["system.hp.max"] = Math.max(1, s.hp.max - d.hp); upd["system.hp.value"] = Math.min(s.hp.value, upd["system.hp.max"]); }
-    if (d.nerve) upd["system.nerveBonus"] = s.nerveBonus - d.nerve;
-    if (d.speedPrev != null) upd["system.speed"] = d.speedPrev;
+    for (const [k, n] of Object.entries(d.abilities ?? {})) upd[`system.abilities.${k}.value`] = s.abilities[k].value - n;
+    if (d.stress) upd["system.stressBonus"] = s.stressBonus - d.stress;
+    if (d.evasion) upd["system.evasionBonus"] = s.evasionBonus - d.evasion;
+    if (d.wounds) upd["system.woundsBonus"] = s.woundsBonus - d.wounds;
     if (d.cash) upd["system.cash"] = Math.max(0, s.cash - d.cash);
     if (Object.keys(upd).length) await actor.update(upd, { noirSkip: true });
   }
@@ -68,49 +51,45 @@ export async function revert(actor, item) {
   if (ids.length) await actor.deleteEmbeddedDocuments("Item", ids);
 }
 
-async function applySpecies(actor, src) {
+async function clearOld(actor, type) {
+  const old = actor.items.find(i => i.type === type);
+  if (old) { await revert(actor, old); await old.delete({ noirReverted: true }); }
+}
+
+/** Выбор N характеристик (для свободных бонусов расы). */
+async function pickAbilities(hint, from, count) {
+  if (!count) return [];
+  const fields = Array.from({ length: count }, (_, i) => `<label style="display:block">${sel(`p${i}`, abilOpts(from))}</label>`).join("");
+  const r = await ask(L("NOIR.PickTitle"), `<p>${hint}</p>${fields}`);
+  return r ? Array.from({ length: count }, (_, i) => r[`p${i}`]) : [];
+}
+
+async function applySpecies(actor, src, picks) {
   const s = src.system, d = emptyDelta();
   for (const k of ABIL) if (s.bonuses[k]) d.abilities[k] = s.bonuses[k];
   const from = s.freeFrom?.length ? s.freeFrom : ABIL;
-  for (const k of await choose(L("NOIR.PickAsi"), abilOpts(from), s.freeAsi)) d.abilities[k] = (d.abilities[k] ?? 0) + 1;
-  if (s.freeSkills) {
-    const open = Object.keys(NOIR.skills).filter(k => actor.system.skills[k].prof < 1);
-    for (const k of await choose(L("NOIR.PickSkills"), skillOpts(open), s.freeSkills)) d.skills[k] = actor.system.skills[k].prof;
-  }
-  d.nerve = s.nerveBonus; d.speedPrev = actor.system.speed; d.speedSet = s.speed;
+  for (const k of picks ?? await pickAbilities(L("NOIR.PickAsi"), from, s.freeAsi)) d.abilities[k] = (d.abilities[k] ?? 0) + 1;
+  d.stress = s.stressBonus; d.evasion = s.evasion; d.wounds = s.wounds;
   return commit(actor, src, d);
 }
 
 async function applyBackground(actor, src) {
-  const s = actor.system, b = src.system, d = emptyDelta();
-  for (const k of b.skillKeys) if (s.skills[k].prof < 1) d.skills[k] = s.skills[k].prof;
+  const b = src.system, d = emptyDelta();
   d.cash = b.startCash;
   const gear = await packDocs("noir-gear");
   return commit(actor, src, d, b.startItems.map(n => gear.find(g => g.name === n)).filter(Boolean));
 }
-
-const faces = cls => Number(String(cls.system.hitDie).replace(/\D/g, "")) || 8;
-const hpPerLevel = (cls, con) => Math.max(1, Math.floor(faces(cls) / 2) + 1 + con);
 
 async function featuresFor(src, from, to) {
   return (await packDocs("noir-features")).filter(f => f.system.source === src.name && f.system.level > from && f.system.level <= to);
 }
 
 async function applyClass(actor, src) {
-  const s = actor.system, c = src.system, d = emptyDelta(), lvl = s.details.level, con = s.abilities.con.mod;
-  d.hp = Math.max(1, faces(src) + con) + (lvl - 1) * hpPerLevel(src, con);
-  d.saves = c.saveKeys.filter(k => !s.abilities[k].saveProf);
-  const open = c.skillKeys.filter(k => s.skills[k].prof < 1);
-  for (const k of await choose(L("NOIR.PickSkills"), skillOpts(open), c.skillCount)) d.skills[k] = s.skills[k].prof;
-  return commit(actor, src, d, await featuresFor(src, 0, lvl));
+  return commit(actor, src, emptyDelta(), await featuresFor(src, 0, actor.system.details.level));
 }
 
 async function applySubclass(actor, src, lvl) {
-  const cls = actor.items.find(i => i.type === "class");
-  if (!cls || cls.name !== src.system.class) return ui.notifications.warn(L("NOIR.WrongClass"));
-  lvl ??= actor.system.details.level;
-  if (lvl < 3) return ui.notifications.warn(L("NOIR.TooEarly"));
-  return commit(actor, src, emptyDelta(), await featuresFor(src, 0, lvl));
+  return commit(actor, src, emptyDelta(), await featuresFor(src, 0, lvl ?? actor.system.details.level));
 }
 
 /** Применение перетащенных на лист расы, происхождения, класса или подкласса. */
@@ -120,33 +99,71 @@ export async function applyOrigin(actor, src, lvl) {
     if (!cls || cls.name !== src.system.class) return ui.notifications.warn(L("NOIR.WrongClass"));
     if ((lvl ?? actor.system.details.level) < 3) return ui.notifications.warn(L("NOIR.TooEarly"));
   }
-  const old = actor.items.find(i => i.type === src.type);
-  if (old) { await revert(actor, old); await old.delete({ noirReverted: true }); }
-  const fn = { species: applySpecies, background: applyBackground, class: applyClass, subclass: applySubclass }[src.type];
-  return fn(actor, src, lvl);
+  await clearOld(actor, src.type);
+  const created = await { species: () => applySpecies(actor, src), background: () => applyBackground(actor, src),
+    class: () => applyClass(actor, src), subclass: () => applySubclass(actor, src, lvl) }[src.type]();
+  ui.notifications.info(game.i18n.format("NOIR.Applied", { name: src.name, actor: actor.name }));
+  return created;
 }
 
-/** Повышение уровня: умения класса и подкласса, хиты. */
+/** Повышение уровня: умения класса и подкласса. */
 export async function levelUp(actor, oldLevel, newLevel) {
-  const cls = actor.items.find(i => i.type === "class");
-  if (!cls || newLevel <= oldLevel) return;
-  const gain = (newLevel - oldLevel) * hpPerLevel(cls, actor.system.abilities.con.mod);
+  if (newLevel <= oldLevel) return;
   const have = new Set(actor.items.filter(i => i.type === "feature").map(i => i.name));
   const docs = [];
   for (const src of actor.items.filter(i => ["class", "subclass"].includes(i.type))) {
     for (const f of await featuresFor(src, oldLevel, newLevel)) if (!have.has(f.name)) { have.add(f.name); docs.push(clone(f, { flags: { [MOD]: { grantedBy: src.id } } })); }
   }
-  await actor.update({ "system.hp.max": actor.system.hp.max + gain, "system.hp.value": actor.system.hp.value + gain }, { noirSkip: true });
-  const delta = cls.getFlag(MOD, "delta");
-  if (delta) await cls.setFlag(MOD, "delta", { ...delta, hp: delta.hp + gain });
   if (docs.length) await actor.createEmbeddedDocuments("Item", docs);
-  ui.notifications.info(game.i18n.format("NOIR.LevelUp", { actor: actor.name, level: newLevel, n: docs.length, hp: gain }));
+  if (oldLevel > 0) ui.notifications.info(game.i18n.format("NOIR.LevelUp", { actor: actor.name, level: newLevel, n: docs.length }));
+}
+
+/** «Прокачаться» с нулевого уровня: раса, класс, происхождение, характеристики. */
+async function create(actor) {
+  const [species, classes, bgs] = await Promise.all(["noir-species", "noir-classes", "noir-backgrounds"].map(packDocs));
+  if (!species.length || !classes.length || !bgs.length) return;
+  const opts = list => Object.fromEntries(list.map(x => [x.id, x.name]));
+  const r1 = await ask(L("NOIR.CreateTitle"), `<p>${L("NOIR.CreateHint")}</p>
+    <label style="display:block">${L("TYPES.Item.species")} ${sel("species", opts(species))}</label>
+    <label style="display:block">${L("TYPES.Item.class")} ${sel("class", opts(classes))}</label>
+    <label style="display:block">${L("TYPES.Item.background")} ${sel("bg", opts(bgs))}</label>`, L("NOIR.Next"));
+  if (!r1) return;
+  const spc = species.find(x => x.id === r1.species), cls = classes.find(x => x.id === r1.class), bg = bgs.find(x => x.id === r1.bg);
+
+  const values = [...new Set(NOIR.statArray)].sort((a, b) => b - a);
+  const from = spc.system.freeFrom?.length ? spc.system.freeFrom : ABIL;
+  let vals = Object.fromEntries(ABIL.map(k => [k, cls.system.stats[k]])), picks;
+  for (;;) {
+    const rows = ABIL.map(k => `<label style="display:block">${L(NOIR.abilities[k])} ${sel(`st_${k}`, Object.fromEntries(values.map(v => [v, sign(v)])), vals[k])}</label>`).join("");
+    const free = Array.from({ length: spc.system.freeAsi }, (_, i) => `<label style="display:block">${L("NOIR.PickAsi")} ${sel(`p${i}`, abilOpts(from))}</label>`).join("");
+    const r2 = await ask(L("NOIR.StatsTitle"), `<p>${L("NOIR.StatsHint")} (${[...NOIR.statArray].sort((a, b) => b - a).map(sign).join(", ")})</p>${rows}${free}`, L("NOIR.Done"));
+    if (!r2) return;
+    vals = Object.fromEntries(ABIL.map(k => [k, Number(r2[`st_${k}`])]));
+    picks = Array.from({ length: spc.system.freeAsi }, (_, i) => r2[`p${i}`]);
+    const ok = JSON.stringify(Object.values(vals).sort()) === JSON.stringify([...NOIR.statArray].sort());
+    if (ok) break;
+    ui.notifications.warn(L("NOIR.StatArrayInvalid"));
+  }
+
+  await actor.update(Object.fromEntries(ABIL.map(k => [`system.abilities.${k}.value`, vals[k]])), { noirSkip: true });
+  await clearOld(actor, "species"); await clearOld(actor, "background"); await clearOld(actor, "class");
+  await applySpecies(actor, spc, picks);
+  await applyBackground(actor, bg);
+  await applyClass(actor, cls);
+  await actor.update({ "system.details.level": 1, "system.details.xp": 0 });
+  await actor.update({ "system.stress.value": 0, "system.wounds.value": 0 }, { noirSkip: true });
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content: `<h3>${L("NOIR.FileOpened")}</h3><p>${spc.name} · ${cls.name} · ${bg.name}</p>`
+  });
 }
 
 /** Диалог повышения уровня: цена роста, подкласс, приём или характеристики. */
 export async function advance(actor) {
-  const s = actor.system, lvl = s.details.level, need = 4 + lvl, next = lvl + 1;
-  if (lvl >= 10) return ui.notifications.info(L("NOIR.MaxLevel"));
+  const s = actor.system, lvl = s.details.level;
+  if (lvl === 0) return create(actor);
+  if (lvl >= NOIR.maxLevel) return ui.notifications.info(L("NOIR.MaxLevel"));
+  const need = 4 + lvl, next = lvl + 1;
   if (s.details.xp < need) return ui.notifications.warn(L("NOIR.NotEnoughXp"));
   const cls = actor.items.find(i => i.type === "class");
   const needPrice = [3, 5, 7, 9].includes(next);
@@ -156,58 +173,52 @@ export async function advance(actor) {
   const have = new Set(actor.items.map(i => i.name));
   const talents = needPick ? (await packDocs("noir-talents")).filter(d => !have.has(d.name)) : [];
 
-  let html = `<p><b>Уровень ${next}</b></p>`;
-  if (needPrice) html += `<fieldset><legend>Цена роста</legend>
-    <label style="display:block"><input type="radio" name="price" value="scar" checked> Шрам: ${sel("scar", Object.fromEntries(Object.entries(NOIR.scars).map(([k, v]) => [k, v.label])))} <input type="text" name="scarText" placeholder="свой вариант"></label>
-    <label style="display:block"><input type="radio" name="price" value="debt"> Долг: <input type="text" name="debtText" placeholder="кому вы должны"></label>
-    <label style="display:block"><input type="radio" name="price" value="heat"> Жар +1</label></fieldset>`;
-  if (subs.length) html += `<fieldset><legend>Подкласс</legend>${sel("sub", Object.fromEntries(subs.map(d => [d.id, d.name])))}</fieldset>`;
-  if (needPick) html += `<fieldset><legend>Приём или характеристики</legend>
-    <label style="display:block"><input type="radio" name="pick" value="talent" checked> Приём: ${sel("talent", Object.fromEntries(talents.map(d => [d.id, d.name])))}</label>
-    <label style="display:block"><input type="radio" name="pick" value="asi"> +1 к двум характеристикам: ${sel("a1", abilOpts(ABIL))} ${sel("a2", abilOpts(ABIL))}</label></fieldset>`;
+  let html = `<p><b>${game.i18n.format("NOIR.LevelN", { n: next })}</b></p>`;
+  if (needPrice) html += `<fieldset><legend>${L("NOIR.Price")}</legend>
+    <label style="display:block"><input type="radio" name="price" value="scar" checked> ${L("NOIR.PriceScar")}: ${sel("scar", Object.fromEntries(Object.entries(NOIR.scars).map(([k, v]) => [k, v.label])))} <input type="text" name="scarText" placeholder="${L("NOIR.Custom")}"></label>
+    <label style="display:block"><input type="radio" name="price" value="debt"> ${L("NOIR.PriceDebt")}: <input type="text" name="debtText" placeholder="${L("NOIR.DebtHint")}"></label>
+    <label style="display:block"><input type="radio" name="price" value="enemy"> ${L("NOIR.PriceEnemy")}: <input type="text" name="enemyText" placeholder="${L("NOIR.EnemyHint")}"></label></fieldset>`;
+  if (subs.length) html += `<fieldset><legend>${L("TYPES.Item.subclass")}</legend>${sel("sub", Object.fromEntries(subs.map(d => [d.id, d.name])))}</fieldset>`;
+  if (needPick) html += `<fieldset><legend>${L("NOIR.TalentOrStats")}</legend>
+    <label style="display:block"><input type="radio" name="pick" value="talent" checked> ${L("NOIR.Talent")}: ${sel("talent", Object.fromEntries(talents.map(d => [d.id, d.name])))}</label>
+    <label style="display:block"><input type="radio" name="pick" value="asi"> ${L("NOIR.PlusTwo")}: ${sel("a1", abilOpts(ABIL))} ${sel("a2", abilOpts(ABIL))}</label></fieldset>`;
 
   let data = {};
   if (needPrice || subs.length || needPick) {
-    data = await foundry.applications.api.DialogV2.prompt({
-      window: { title: `Повышение уровня: ${actor.name}` }, content: html,
-      ok: { label: `Уровень ${next}`, callback: (ev, btn) => new (FormData())(btn.form).object }, rejectClose: false
-    });
+    data = await ask(`${L("NOIR.Advance")}: ${actor.name}`, html, game.i18n.format("NOIR.LevelN", { n: next }));
     if (!data) return;
   }
 
   const upd = {}, notes = [], d = s.details;
+  const addLine = (path, old, text) => { upd[path] = (old ? old + "\n" : "") + `• ${text} (${next})`; };
   if (needPrice) {
-    if (data.price === "heat") { upd["system.heat"] = Math.min(5, s.heat + 1); notes.push("Жар +1"); }
-    else if (data.price === "debt") {
-      const t = data.debtText?.trim() || "безымянный кредитор";
-      upd["system.details.debts"] = (d.debts ? d.debts + "\n" : "") + `• ${t} (ур. ${next})`; notes.push(`Долг: ${t}`);
-    } else {
-      const sc = NOIR.scars[data.scar] ?? NOIR.scars.custom;
-      const t = data.scarText?.trim() || sc.label;
-      upd["system.details.scars"] = (d.scars ? d.scars + "\n" : "") + `• ${t} (ур. ${next})`; notes.push(`Шрам: ${t}`);
-      if (sc.speed) upd["system.speed"] = Math.max(0, s.speed + sc.speed);
-      if (sc.nerve) upd["system.nerveBonus"] = s.nerveBonus + sc.nerve;
+    if (data.price === "debt") { const t = data.debtText?.trim() || L("NOIR.Unnamed"); addLine("system.details.debts", d.debts, t); notes.push(`${L("NOIR.PriceDebt")}: ${t}`); }
+    else if (data.price === "enemy") { const t = data.enemyText?.trim() || L("NOIR.Unnamed"); addLine("system.details.enemies", d.enemies, t); notes.push(`${L("NOIR.PriceEnemy")}: ${t}`); }
+    else {
+      const sc = NOIR.scars[data.scar] ?? NOIR.scars.custom, t = data.scarText?.trim() || sc.label;
+      addLine("system.details.scars", d.scars, t); notes.push(`${L("NOIR.PriceScar")}: ${t}`);
+      if (sc.stress) upd["system.stressBonus"] = s.stressBonus + sc.stress;
     }
   }
   if (needPick && data.pick === "asi") {
     for (const k of [data.a1, data.a2]) {
       const path = `system.abilities.${k}.value`;
-      upd[path] = Math.min(20, (upd[path] ?? s.abilities[k].value) + 1);
+      upd[path] = Math.min(NOIR.statMax, (upd[path] ?? s.abilities[k].value) + 1);
     }
-    notes.push(`+1 к ${L(NOIR.abilities[data.a1])} и ${L(NOIR.abilities[data.a2])}`);
+    notes.push(`+1 ${L(NOIR.abilities[data.a1])}, +1 ${L(NOIR.abilities[data.a2])}`);
   }
   if (Object.keys(upd).length) await actor.update(upd, { noirSkip: true });
   if (needPick && data.pick === "talent") {
     const t = talents.find(x => x.id === data.talent);
-    if (t) { await actor.createEmbeddedDocuments("Item", [clone(t)]); notes.push(`Приём: ${t.name}`); }
+    if (t) { await actor.createEmbeddedDocuments("Item", [clone(t)]); notes.push(`${L("NOIR.Talent")}: ${t.name}`); }
   }
   if (subs.length) {
     const sub = subs.find(x => x.id === data.sub);
-    if (sub) { await applyOrigin(actor, sub, next); notes.push(`Подкласс: ${sub.name}`); }
+    if (sub) { await applyOrigin(actor, sub, next); notes.push(`${L("TYPES.Item.subclass")}: ${sub.name}`); }
   }
   await actor.update({ "system.details.xp": s.details.xp - need, "system.details.level": next });
   await ChatMessage.create({
     speaker: ChatMessage.getSpeaker({ actor }),
-    content: `<h3>Уровень ${next}</h3>${notes.length ? `<p>${notes.join("<br>")}</p>` : ""}`
+    content: `<h3>${game.i18n.format("NOIR.LevelN", { n: next })}</h3>${notes.length ? `<p>${notes.join("<br>")}</p>` : ""}`
   });
 }

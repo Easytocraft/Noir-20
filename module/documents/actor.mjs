@@ -5,25 +5,26 @@ export class NoirActor extends Actor {
     super.prepareDerivedData();
     const s = this.system;
     if (!s.abilities) return;
-    s.prof = 2 + Math.floor((s.details.level - 1) / 4);
-    for (const a of Object.values(s.abilities)) {
-      a.mod = Math.floor((a.value - 10) / 2);
-      a.save = a.mod + (a.saveProf ? s.prof : 0);
-    }
-    for (const [k, sk] of Object.entries(s.skills)) {
-      sk.total = s.abilities[NOIR.skills[k].ability].mod + Math.floor(sk.prof * s.prof);
-    }
-    s.nerve.max = Math.max(1, 8 + s.abilities.wis.mod + s.details.level + s.nerveBonus);
-    s.passive = 10 + s.skills.perception.total;
+    const lvl = s.details.level;
+    for (const a of Object.values(s.abilities)) a.mod = a.value;
+    const { con, dex, luck } = Object.fromEntries(Object.entries(s.abilities).map(([k, a]) => [k, a.value]));
 
-    const dex = s.abilities.dex.mod;
-    if (this.type === "npc") s.ac = s.acFlat;
-    else {
-      const worn = this.items.find(i => i.type === "armor" && i.system.kind === "armor" && i.system.equipped);
-      let ac = worn ? worn.system.ac + Math.min(dex, worn.system.maxDex ?? 99) : 10 + dex;
-      for (const sh of this.items.filter(i => i.type === "armor" && i.system.kind === "shield" && i.system.equipped)) ac += sh.system.ac;
-      s.ac = ac;
+    const worn = this.items.filter(i => i.type === "armor" && i.system.equipped);
+    const protection = worn.reduce((n, i) => n + i.system.protection, 0);
+    const evasionMod = worn.reduce((n, i) => n + i.system.evasion, 0);
+
+    if (this.type === "npc") {
+      s.evasion = s.foe.evasion;
+      s.thresholds = { minor: s.foe.minor, medium: s.foe.medium };
+      s.wounds.max = s.foe.wounds;
+    } else {
+      s.evasion = 10 + dex + evasionMod + s.evasionBonus;
+      const minor = 4 + Math.max(0, con) + protection;
+      s.thresholds = { minor, medium: minor + 5 };
+      s.wounds.max = Math.max(3, 6 + con + Math.floor(lvl / 3) + s.woundsBonus);
     }
+    s.stress.max = Math.max(3, 6 + luck + s.stressBonus);
+    s.breakdown = s.stress.value >= s.stress.max;
   }
 
   static _mode(event) {
@@ -33,27 +34,20 @@ export class NoirActor extends Actor {
   }
 
   async _d20(mod, flavor, event) {
-    const m = NoirActor._mode(event);
+    const m = Math.max(-1, Math.min(1, NoirActor._mode(event) - (this.system.breakdown ? 1 : 0)));
+    if (this.system.breakdown) flavor += ` (${game.i18n.localize("NOIR.Breakdown")})`;
     const die = m > 0 ? "2d20kh" : m < 0 ? "2d20kl" : "1d20";
     const roll = await new Roll(`${die} + @mod`, { mod }).evaluate();
     return roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor: this }), flavor });
   }
 
   rollAbility(key, event) {
-    const L = game.i18n.localize(NOIR.abilities[key]);
-    return this._d20(this.system.abilities[key].mod, `${L}: ${game.i18n.localize("NOIR.Check")}`, event);
-  }
-  rollSave(key, event) {
-    const L = game.i18n.localize(NOIR.abilities[key]);
-    return this._d20(this.system.abilities[key].save, `${L}: ${game.i18n.localize("NOIR.Save")}`, event);
-  }
-  rollSkill(key, event) {
-    return this._d20(this.system.skills[key].total, game.i18n.localize(NOIR.skills[key].label), event);
+    return this._d20(this.system.abilities[key].value, game.i18n.localize(NOIR.abilities[key]), event);
   }
 
   _weaponAbilityMod(w) {
     const a = this.system.abilities;
-    return w.ability === "finesse" ? Math.max(a.str.mod, a.dex.mod) : a[w.ability].mod;
+    return w.ability === "finesse" ? Math.max(a.str.value, a.dex.value) : a[w.ability].value;
   }
 
   async rollAttack(item, event) {
@@ -62,8 +56,7 @@ export class NoirActor extends Actor {
       if (w.ammo.value <= 0) return ui.notifications.warn(game.i18n.format("NOIR.NoAmmo", { name: item.name }));
       await item.update({ "system.ammo.value": w.ammo.value - 1 });
     }
-    const mod = this._weaponAbilityMod(w) + (w.proficient ? this.system.prof : 0) + w.attackBonus;
-    return this._d20(mod, `${item.name}: ${game.i18n.localize("NOIR.Attack")}`, event);
+    return this._d20(this._weaponAbilityMod(w) + w.attackBonus, `${item.name}: ${game.i18n.localize("NOIR.Attack")}`, event);
   }
 
   async rollDamage(item, event) {
@@ -74,5 +67,38 @@ export class NoirActor extends Actor {
     await roll.evaluate();
     const tag = crit ? ` (${game.i18n.localize("NOIR.Crit")})` : "";
     return roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor: this }), flavor: `${item.name}: ${game.i18n.localize("NOIR.Damage")} ${w.damageType}${tag}` });
+  }
+
+  /** Кураж (+) — вдохновение; Цинизм (−) — холодный расчёт. Каждая трата сдвигает ползунок к нулю. */
+  async spendCourage() {
+    const s = this.system, c = s.courage, speaker = ChatMessage.getSpeaker({ actor: this });
+    if (c > 0) {
+      await this.update({ "system.courage": c - 1 });
+      return ChatMessage.create({ speaker, content: `<p>${game.i18n.format("NOIR.InspireMsg", { name: this.name })}</p>` });
+    }
+    if (c < 0) {
+      if (s.stress.value <= 0) return ui.notifications.warn(game.i18n.localize("NOIR.NoStress"));
+      await this.update({ "system.courage": c + 1, "system.stress.value": s.stress.value - 1 });
+      return ChatMessage.create({ speaker, content: `<p>${game.i18n.format("NOIR.ColdMsg", { name: this.name })}</p>` });
+    }
+  }
+
+  /** Ступень урона: сколько ран отмечается при получении amount урона. */
+  static woundsFor(amount, th) {
+    if (amount <= 0) return 0;
+    return amount <= th.minor ? 1 : amount <= th.medium ? 2 : 3;
+  }
+
+  async takeDamage(amount) {
+    const s = this.system, n = NoirActor.woundsFor(amount, s.thresholds);
+    if (!n) return;
+    const value = Math.min(s.wounds.max, s.wounds.value + n);
+    await this.update({ "system.wounds.value": value });
+    const tier = game.i18n.localize(`NOIR.Tier.${n}`);
+    const down = value >= s.wounds.max ? `<p><b>${game.i18n.localize("NOIR.Down")}</b></p>` : "";
+    return ChatMessage.create({
+      speaker: ChatMessage.getSpeaker({ actor: this }),
+      content: `<p>${game.i18n.format("NOIR.DamageTaken", { amount, tier, n })}</p>${down}`
+    });
   }
 }

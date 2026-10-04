@@ -220,12 +220,11 @@
   "type": "armor",
   "system": {
    "kind": "armor",
-   "ac": 11,
-   "maxDex": null,
-   "stealthDis": false,
    "weight": 2,
    "price": 10,
-   "description": "<p>Лёгкая броня.</p>"
+   "description": "<p>Лёгкая защита: пороги урона +1.</p>",
+   "protection": 1,
+   "evasion": 0
   }
  },
  {
@@ -233,12 +232,11 @@
   "type": "armor",
   "system": {
    "kind": "armor",
-   "ac": 12,
-   "maxDex": null,
-   "stealthDis": false,
    "weight": 3,
    "price": 25,
-   "description": "<p>Лёгкая броня, подбита стальной сеткой.</p>"
+   "description": "<p>Подбит стальной сеткой: пороги урона +2.</p>",
+   "protection": 2,
+   "evasion": 0
   }
  },
  {
@@ -246,12 +244,11 @@
   "type": "armor",
   "system": {
    "kind": "armor",
-   "ac": 14,
-   "maxDex": 2,
-   "stealthDis": false,
    "weight": 6,
    "price": 80,
-   "description": "<p>Средняя броня.</p>"
+   "description": "<p>Пороги урона +3, Уклонение −1.</p>",
+   "protection": 3,
+   "evasion": -1
   }
  },
  {
@@ -259,12 +256,11 @@
   "type": "armor",
   "system": {
    "kind": "armor",
-   "ac": 16,
-   "maxDex": 0,
-   "stealthDis": true,
    "weight": 12,
    "price": 150,
-   "description": "<p>Тяжёлая броня, помеха на Скрытность.</p>"
+   "description": "<p>Пороги урона +5, Уклонение −2.</p>",
+   "protection": 5,
+   "evasion": -2
   }
  },
  {
@@ -272,12 +268,11 @@
   "type": "armor",
   "system": {
    "kind": "shield",
-   "ac": 1,
-   "maxDex": null,
-   "stealthDis": false,
    "weight": 3,
    "price": 20,
-   "description": "<p>Щит: +1 к КД.</p>"
+   "description": "<p>Щит: Уклонение +1.</p>",
+   "protection": 0,
+   "evasion": 1
   }
  },
  {
@@ -307,7 +302,7 @@
    "quantity": 3,
    "weight": 1,
    "price": 3,
-   "description": "<p>Съешьте… то есть выпейте глоток: восстановите 1d4 Нерва, но следующая проверка Восприятия с помехой.</p>"
+   "description": "<p>Глоток: снимите 1d4 Стресса, но следующая проверка Интеллекта с помехой.</p>"
   }
  },
  {
@@ -317,7 +312,7 @@
    "quantity": 10,
    "weight": 0.1,
    "price": 1,
-   "description": "<p>Затяжка: восстановите 1 Нерв (раз в сцену).</p>"
+   "description": "<p>Затяжка: снимите 1 Стресс (раз в сцену).</p>"
   }
  },
  {
@@ -327,7 +322,7 @@
    "quantity": 3,
    "weight": 1,
    "price": 10,
-   "description": "<p>3 порции. Лечит 1d6 хитов (действие).</p>"
+   "description": "<p>3 порции. Одна порция снимает 1 рану (действие).</p>"
   }
  },
  {
@@ -377,7 +372,7 @@
    "quantity": 1,
    "weight": 0,
    "price": 20,
-   "description": "<p>Преимущество на Обман при проверке документов один раз.</p>"
+   "description": "<p>Проверка Харизмы при проверке документов — с преимуществом (один раз).</p>"
   }
  },
  {
