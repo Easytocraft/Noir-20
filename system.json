@@ -2,7 +2,14 @@
   "id": "noir-d20",
   "title": "Нуар d20: Серый Порт",
   "description": "Нуарная система d20: досье вместо листа, шесть характеристик, раны и пороги урона как в Daggerheart, Стресс и Кураж, ролевой упор.",
-  "version": "0.6.0",
+  "version": "0.4.1",
+  "url": "https://github.com/Easytocraft/Noir-20",
+  "manifest": "https://github.com/Easytocraft/Noir-20/releases/latest/download/system.json",
+  "download": "https://github.com/Easytocraft/Noir-20/releases/download/v0.4.1/noir-d20.zip",
+  "bugs": "https://github.com/Easytocraft/Noir-20/issues",
+  "license": "LICENSE",
+  "readme": "README.md",
+  "changelog": "CHANGELOG.md",
   "compatibility": {
     "minimum": "13",
     "verified": "13"
@@ -82,8 +89,5 @@
     }
   },
   "primaryTokenAttribute": "hp",
-  "secondaryTokenAttribute": "stress",
-  "license": "LICENSE",
-  "readme": "README.md",
-  "changelog": "CHANGELOG.md"
+  "secondaryTokenAttribute": "stress"
 }

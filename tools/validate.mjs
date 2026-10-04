@@ -86,6 +86,14 @@ for (const t of types) new RegExp(`\\b${t}: \\w+Data`).test(reg) || err(`тип 
 fs.existsSync(path.join(root, system.esmodules[0])) || err("нет esmodule");
 system.styles.forEach(s => fs.existsSync(path.join(root, s)) || err(`нет стиля ${s}`));
 system.languages.forEach(l => fs.existsSync(path.join(root, l.path)) || err(`нет языка ${l.path}`));
+// ссылки на скачивание и версия
+const pkgv = json("package.json").version;
+/^\d+\.\d+\.\d+$/.test(system.version) || err(`версия ${system.version}`);
+system.version === pkgv || err(`версии не совпадают: system.json ${system.version}, package.json ${pkgv}`);
+system.url === "https://github.com/Easytocraft/Noir-20" || err(`url: ${system.url}`);
+system.manifest === `${system.url}/releases/latest/download/system.json` || err(`manifest: ${system.manifest}`);
+system.download === `${system.url}/releases/download/v${system.version}/noir-d20.zip` || err(`download не соответствует версии ${system.version}: ${system.download}`);
+read("CHANGELOG.md").includes(`## ${system.version}`) || err(`в CHANGELOG нет раздела ${system.version}`);
 ok("манифест");
 if (errors) { console.error(`\nОшибок: ${errors}`); process.exit(1); }
 console.log("\nВсё в порядке");
