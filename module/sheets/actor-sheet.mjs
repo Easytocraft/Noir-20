@@ -13,11 +13,11 @@ export class NoirActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     window: { resizable: true },
     form: { submitOnChange: true },
     actions: {
-      tab: NoirActorSheet.tab, rollAbility: NoirActorSheet.rollAbility, rollAttack: NoirActorSheet.rollAttack,
+      openTab: NoirActorSheet.openTab, rollAbility: NoirActorSheet.rollAbility, rollAttack: NoirActorSheet.rollAttack,
       rollDamage: NoirActorSheet.rollDamage, reload: NoirActorSheet.reload, toggleEquip: NoirActorSheet.toggleEquip,
       editItem: NoirActorSheet.editItem, deleteItem: NoirActorSheet.deleteItem, createItem: NoirActorSheet.createItem,
-      useItem: NoirActorSheet.useItem, setWound: NoirActorSheet.setWound, setStress: NoirActorSheet.setStress, spendCourage: NoirActorSheet.spendCourage,
-      setMark: NoirActorSheet.setMark, takeDamage: NoirActorSheet.takeDamage, advance: NoirActorSheet.advance
+      useItem: NoirActorSheet.useItem, setWound: NoirActorSheet.setWound, setStress: NoirActorSheet.setStress,
+      setMark: NoirActorSheet.setMark, advance: NoirActorSheet.advance
     }
   };
 
@@ -34,19 +34,22 @@ export class NoirActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
 
     ctx.actor = doc; ctx.system = sys; ctx.isNpc = doc.type === "npc";
     ctx.level = lvl; ctx.caseNo = doc.id.slice(0, 6).toUpperCase();
-    ctx.tabs = TABS.map(id => ({ id, label: L(`NOIR.Tab.${id}`), active: id === this._tab }));
+    ctx.tabs = TABS.map((id, i) => ({ id, n: String(i + 1).padStart(2, "0"), label: L(`NOIR.Tab.${id}`), active: id === this._tab }));
+    ctx.page = TABS.indexOf(this._tab) + 1; ctx.pages = TABS.length;
     ctx.t = { [this._tab]: true };
 
     ctx.abilities = Object.entries(NOIR.abilities).map(([key, label]) => ({
-      key, label: L(label), value: sys.abilities[key].value,
+      key, label: L(label), value: sys.abilities[key].value, icon: NOIR.icons[key],
       tip: `<strong>${L(label)}</strong><ul>${L(`NOIR.AbilityTip.${key}`).split("|").map(x => `<li>${x}</li>`).join("")}</ul>`
     }));
     const th = sys.thresholds;
     ctx.ranges = { minor: `1–${th.minor}`, medium: `${th.minor + 1}–${th.medium}`, heavy: `${th.medium + 1}+` };
     ctx.wounds = Array.from({ length: sys.wounds.max }, (_, i) => ({ i, on: i < sys.wounds.value }));
     ctx.stressPips = Array.from({ length: sys.stress.max }, (_, i) => ({ i, on: i < sys.stress.value }));
-    ctx.courageUp = sys.courage > 0; ctx.courageDown = sys.courage < 0;
-    ctx.showXp = lvl >= 1 && lvl < NOIR.maxLevel; ctx.xpNeed = need;
+    ctx.courageUp = sys.courage > 0;
+    ctx.isGM = game.user.isGM;
+    ctx.rings = Array(12).fill(0);
+    ctx.showXp = ctx.isGM && lvl >= 1 && lvl < NOIR.maxLevel; ctx.xpNeed = need;
     ctx.xpMarks = Array.from({ length: need }, (_, i) => ({ i, on: i < sys.details.xp }));
     ctx.canAdvance = lvl === 0 || (lvl < NOIR.maxLevel && sys.details.xp >= need);
     ctx.vices = NOIR.vices; ctx.drives = NOIR.drives;
@@ -74,7 +77,7 @@ export class NoirActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   }
 
   static _item(sheet, target) { return sheet.document.items.get(target.closest("[data-item-id]")?.dataset.itemId); }
-  static tab(event, target) { this._tab = target.dataset.tab; return this.render(); }
+  static openTab(event, target) { this._tab = target.dataset.tab; return this.render(); }
   static rollAbility(event, target) { return this.document.rollAbility(target.dataset.ability, event); }
   static rollAttack(event, target) { return this.document.rollAttack(NoirActorSheet._item(this, target), event); }
   static rollDamage(event, target) { return this.document.rollDamage(NoirActorSheet._item(this, target), event); }
@@ -94,15 +97,6 @@ export class NoirActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   static #toggle(path, current, i) { return { [path]: current === i + 1 ? i : i + 1 }; }
   static setWound(event, target) { return this.document.update(NoirActorSheet.#toggle("system.wounds.value", this.document.system.wounds.value, Number(target.dataset.index))); }
   static setStress(event, target) { return this.document.update(NoirActorSheet.#toggle("system.stress.value", this.document.system.stress.value, Number(target.dataset.index))); }
-  static spendCourage() { return this.document.spendCourage(); }
-  static setMark(event, target) { return this.document.update(NoirActorSheet.#toggle("system.details.xp", this.document.system.details.xp, Number(target.dataset.index))); }
-  static async takeDamage() {
-    const r = await foundry.applications.api.DialogV2.prompt({
-      window: { title: L("NOIR.TakeDamage") },
-      content: `<label>${L("NOIR.DamageAmount")} <input type="number" name="amount" value="1" min="1" autofocus></label>`,
-      ok: { label: "OK", callback: (ev, btn) => new foundry.applications.ux.FormDataExtended(btn.form).object }, rejectClose: false
-    });
-    if (r) return this.document.takeDamage(Number(r.amount));
-  }
+  static setMark(event, target) { if (!game.user.isGM) return; return this.document.update(NoirActorSheet.#toggle("system.details.xp", this.document.system.details.xp, Number(target.dataset.index))); }
   static advance() { return advance(this.document); }
 }

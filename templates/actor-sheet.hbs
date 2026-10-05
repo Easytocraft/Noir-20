@@ -1,36 +1,52 @@
 <div class="dossier">
   <aside class="side">
     <div class="photo">
-      <span class="clip"></span>
-      <img src="{{actor.img}}" data-edit="img" data-action="editImage" alt="">
+      <svg class="clip" viewBox="0 0 30 72" aria-hidden="true">
+        <defs><linearGradient id="noirSteel" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#5d6063"/><stop offset=".42" stop-color="#b4b7b4"/><stop offset="1" stop-color="#4c4f52"/></linearGradient></defs>
+        <path d="M21 24V56a8 8 0 0 1-16 0V14a10 10 0 0 1 20 0V52a5 5 0 0 1-10 0V20" fill="none" stroke="url(#noirSteel)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M21 24V56a8 8 0 0 1-16 0V14a10 10 0 0 1 20 0V52a5 5 0 0 1-10 0V20" fill="none" stroke="#7a4a2a" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="2 11" opacity=".6"/>
+        <path d="M21 24V56a8 8 0 0 1-16 0V14a10 10 0 0 1 20 0V52a5 5 0 0 1-10 0V20" fill="none" stroke="#5a3a22" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 17" stroke-dashoffset="5" opacity=".7"/>
+      </svg>
+      <span class="tape t1"></span>
+      <div class="frame">
+        <img src="{{actor.img}}" data-edit="img" data-action="editImage" alt="">
+        <i class="c tl"></i><i class="c tr"></i><i class="c bl"></i><i class="c br"></i>
+      </div>
     </div>
-    <input class="name" type="text" name="name" value="{{actor.name}}" placeholder="{{localize 'NOIR.Name'}}">
+    <div class="label-strip" data-label="{{localize 'NOIR.NameLabel'}}">
+      <input class="name" type="text" name="name" value="{{actor.name}}" placeholder="{{localize 'NOIR.Name'}}">
+    </div>
     <div class="stamp level">{{localize "NOIR.Level"}} {{level}}</div>
     {{#if showXp}}
     <div class="xp">
-      <div class="xp-head">{{localize "NOIR.Experience"}} <b>{{system.details.xp}} / {{xpNeed}}</b></div>
+      <div class="xp-head"><span>{{localize "NOIR.Experience"}}</span><b>{{system.details.xp}} / {{xpNeed}}</b></div>
       <div class="marks">{{#each xpMarks}}<a class="mark {{#if on}}on{{/if}}" data-action="setMark" data-index="{{i}}"></a>{{/each}}</div>
     </div>
     {{/if}}
-    <button type="button" class="advance-btn" data-action="advance" {{#unless canAdvance}}disabled{{/unless}}>{{localize "NOIR.Advance"}}</button>
-    <ul class="origin">
+    {{#if isGM}}<button type="button" class="advance-btn" data-action="advance" {{#unless canAdvance}}disabled{{/unless}}>{{localize "NOIR.Advance"}}</button>{{/if}}
+    <ul class="origin" data-title="{{localize 'NOIR.CardTitle'}}">
       {{#each origin}}<li><span class="k">{{type}}</span><a data-item-id="{{id}}" data-action="editItem">{{name}}</a></li>{{/each}}
     </ul>
+    <div class="fingerprint"></div>
     <div class="case-no">{{localize "NOIR.Case"}} № {{caseNo}}</div>
   </aside>
 
   <div class="main">
-    <nav class="tabs">
-      {{#each tabs}}<a class="tab {{#if active}}active{{/if}}" data-action="tab" data-tab="{{id}}">{{label}}</a>{{/each}}
+    <nav class="dtabs">
+      {{#each tabs}}<a class="dtab {{#if active}}active{{/if}}" data-action="openTab" data-tab="{{id}}"><span class="n">{{n}}</span>{{label}}</a>{{/each}}
     </nav>
-    <section class="paper">
+    <div class="paper-wrap"><section class="paper">
       <div class="stamp secret">{{localize "NOIR.Secret"}}</div>
+      <header class="letterhead">
+        <div class="agency">{{localize "NOIR.Agency"}} <span class="redact r1"></span> <span class="redact r2"></span></div>
+        <div class="form-line"><span>{{localize "NOIR.PersonalFile"}} № <b>{{caseNo}}</b></span><span>{{localize "NOIR.Subject"}}: <b>{{actor.name}}</b></span></div>
+      </header>
       <div class="tab-body">
 
       {{#if t.traits}}
         <div class="grid2">
           <div class="box">
-            <h3>{{localize "NOIR.Defense"}}</h3>
+            <h3><span>{{localize "NOIR.Defense"}}</span></h3>
             <div class="defense">
               <div class="evasion"><label>{{localize "NOIR.Evasion"}}</label>
                 {{#if isNpc}}<input type="number" name="system.foe.evasion" value="{{system.foe.evasion}}">{{else}}<b>{{system.evasion}}</b>{{/if}}</div>
@@ -42,29 +58,27 @@
             </div>
           </div>
           <div class="box">
-            <h3>{{localize "NOIR.Status"}}</h3>
+            <h3><span>{{localize "NOIR.Status"}}</span></h3>
             <div class="track-head"><label>{{localize "NOIR.Wounds"}}</label><b>{{system.wounds.value}}/{{system.wounds.max}}</b>
               {{#if isNpc}}<input type="number" name="system.foe.wounds" value="{{system.foe.wounds}}" title="{{localize 'NOIR.Wounds'}}">{{/if}}</div>
             <div class="track wounds">{{#each wounds}}<a class="bullet {{#if on}}on{{/if}}" data-action="setWound" data-index="{{i}}"></a>{{/each}}</div>
             <div class="track-head"><label>{{localize "NOIR.Stress"}}</label><b class="{{#if system.breakdown}}alarm{{/if}}">{{system.stress.value}}/{{system.stress.max}}</b></div>
             <div class="track stress">{{#each stressPips}}<a class="pip {{#if on}}on{{/if}}" data-action="setStress" data-index="{{i}}"></a>{{/each}}</div>
             {{#if system.breakdown}}<p class="hint alarm">{{localize "NOIR.BreakdownHint"}}</p>{{/if}}
-            <div class="courage">
+            <div class="courage" data-tooltip="{{localize 'NOIR.CourageHint'}}" data-tooltip-direction="UP" data-tooltip-class="noir-tip">
               <div class="c-head"><span>{{localize "NOIR.Cynicism"}}</span><b>{{#if courageUp}}+{{/if}}{{system.courage}}</b><span>{{localize "NOIR.Courage"}}</span></div>
               <input type="range" min="-5" max="5" step="1" name="system.courage" value="{{system.courage}}">
               <div class="c-scale"><span>−5</span><span>0</span><span>+5</span></div>
-              {{#if courageUp}}<button type="button" class="small" data-action="spendCourage" title="{{localize 'NOIR.InspireHint'}}">{{localize "NOIR.Inspire"}}</button>{{/if}}
-              {{#if courageDown}}<button type="button" class="small" data-action="spendCourage" title="{{localize 'NOIR.ColdHint'}}">{{localize "NOIR.ColdCalc"}}</button>{{/if}}
             </div>
-            <button type="button" class="small" data-action="takeDamage">{{localize "NOIR.TakeDamage"}}</button>
           </div>
         </div>
 
         <div class="box">
-          <h3>{{localize "NOIR.Abilities"}}</h3>
+          <h3><span>{{localize "NOIR.Abilities"}}</span></h3>
           <div class="stats">
             {{#each abilities}}
             <div class="stat" data-tooltip="{{tip}}" data-tooltip-direction="UP" data-tooltip-class="noir-tip">
+              <i class="icon i-{{key}}"></i>
               <a class="label" data-action="rollAbility" data-ability="{{key}}">{{label}}</a>
               <input type="number" name="system.abilities.{{key}}.value" value="{{value}}">
             </div>
@@ -80,7 +94,7 @@
 
       {{#if t.abilities}}
         {{#each featureGroups}}
-        <h3>{{name}}</h3>
+        <h3><span>{{name}}</span></h3>
         {{#each list}}
         <details class="trait" data-item-id="{{id}}">
           <summary>{{#if level}}<span class="lv">{{level}}</span>{{/if}}{{name}}{{#if cost}} <em>({{cost}})</em>{{/if}}
@@ -93,19 +107,19 @@
       {{/if}}
 
       {{#if t.items}}
-        <div class="cash"><label>{{localize "NOIR.Cash"}}</label> <input type="number" name="system.cash" value="{{system.cash}}"></div>
-        <h3>{{localize "NOIR.Weapons"}} <a data-action="createItem" data-type="weapon">＋</a></h3>
+        <div class="cash"><span class="bill">$</span><label>{{localize "NOIR.Cash"}}</label><input type="number" name="system.cash" value="{{system.cash}}"></div>
+        <h3><span>{{localize "NOIR.Weapons"}}</span><a data-action="createItem" data-type="weapon">＋</a></h3>
         {{#each weapons}}
         <div class="item" data-item-id="{{id}}">
           <a class="iname" data-action="editItem">{{name}}</a>
-          <span>{{system.damage}} {{system.damageType}}</span>
+          <span class="chip">{{system.damage}}</span><span>{{system.damageType}}</span>
           {{#if system.ammo.max}}<span>{{system.ammo.value}}/{{system.ammo.max}}</span><a data-action="reload" title="{{localize 'NOIR.Reload'}}">⟳</a>{{/if}}
           <a data-action="rollAttack">{{localize "NOIR.Attack"}}</a>
           <a data-action="rollDamage">{{localize "NOIR.Damage"}}</a>
           <a data-action="deleteItem">✕</a>
         </div>
         {{/each}}
-        <h3>{{localize "NOIR.Armor"}} <a data-action="createItem" data-type="armor">＋</a></h3>
+        <h3><span>{{localize "NOIR.Armor"}}</span><a data-action="createItem" data-type="armor">＋</a></h3>
         {{#each armor}}
         <div class="item" data-item-id="{{id}}">
           <a class="iname" data-action="editItem">{{name}}</a>
@@ -114,7 +128,7 @@
           <a data-action="deleteItem">✕</a>
         </div>
         {{/each}}
-        <h3>{{localize "NOIR.Gear"}} <a data-action="createItem" data-type="gear">＋</a></h3>
+        <h3><span>{{localize "NOIR.Gear"}}</span><a data-action="createItem" data-type="gear">＋</a></h3>
         {{#each gear}}
         <div class="item" data-item-id="{{id}}">
           <a class="iname" data-action="editItem">{{name}}</a>
@@ -133,6 +147,7 @@
         <datalist id="noir-vices">{{#each vices}}<option value="{{this}}">{{/each}}</datalist>
         <datalist id="noir-drives">{{#each drives}}<option value="{{this}}">{{/each}}</datalist>
         <p class="hint">{{localize "NOIR.ViceHint"}}</p>
+        <h3><span>{{localize "NOIR.Tab.biography"}}</span></h3>
         <prose-mirror name="system.biography" value="{{system.biography}}" toggled="true" collaborate="false">{{{bio}}}</prose-mirror>
         <div class="cols3">
           <label>{{localize "NOIR.Scars"}}<textarea name="system.details.scars" rows="4">{{system.details.scars}}</textarea></label>
@@ -142,10 +157,15 @@
       {{/if}}
 
       {{#if t.notes}}
-        <prose-mirror name="system.notes" value="{{system.notes}}" toggled="true" collaborate="false">{{{notes}}}</prose-mirror>
+        <div class="notebook">
+          <div class="leaf">
+            <prose-mirror name="system.notes" value="{{system.notes}}" toggled="true" collaborate="false">{{{notes}}}</prose-mirror>
+          </div>
+          <div class="rings">{{#each rings}}<i class="ring"></i>{{/each}}</div>
+        </div>
       {{/if}}
 
       </div>
-    </section>
+    </section></div>
   </div>
 </div>

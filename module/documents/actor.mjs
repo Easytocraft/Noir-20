@@ -69,20 +69,6 @@ export class NoirActor extends Actor {
     return roll.toMessage({ speaker: ChatMessage.getSpeaker({ actor: this }), flavor: `${item.name}: ${game.i18n.localize("NOIR.Damage")} ${w.damageType}${tag}` });
   }
 
-  /** Кураж (+) — вдохновение; Цинизм (−) — холодный расчёт. Каждая трата сдвигает ползунок к нулю. */
-  async spendCourage() {
-    const s = this.system, c = s.courage, speaker = ChatMessage.getSpeaker({ actor: this });
-    if (c > 0) {
-      await this.update({ "system.courage": c - 1 });
-      return ChatMessage.create({ speaker, content: `<p>${game.i18n.format("NOIR.InspireMsg", { name: this.name })}</p>` });
-    }
-    if (c < 0) {
-      if (s.stress.value <= 0) return ui.notifications.warn(game.i18n.localize("NOIR.NoStress"));
-      await this.update({ "system.courage": c + 1, "system.stress.value": s.stress.value - 1 });
-      return ChatMessage.create({ speaker, content: `<p>${game.i18n.format("NOIR.ColdMsg", { name: this.name })}</p>` });
-    }
-  }
-
   /** Ступень урона: сколько ран отмечается при получении amount урона. */
   static woundsFor(amount, th) {
     if (amount <= 0) return 0;

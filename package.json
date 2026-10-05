@@ -1,12 +1,12 @@
 {
   "name": "noir-d20",
-  "version": "0.4.1",
+  "version": "0.4.3",
   "private": true,
   "type": "module",
   "scripts": {
     "validate": "node tools/validate.mjs",
     "smoke": "node tools/smoke.mjs",
-    "test": "node tools/validate.mjs && node tools/smoke.mjs",
+    "test": "node tools/validate.mjs && node tools/smoke.mjs && node tools/templates.mjs",
     "packs": "node tools/build-packs.mjs",
     "packs:source": "node tools/build-packs.mjs --source-only",
     "bump": "node tools/bump.mjs"

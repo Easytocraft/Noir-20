@@ -160,6 +160,7 @@ async function create(actor) {
 
 /** Диалог повышения уровня: цена роста, подкласс, приём или характеристики. */
 export async function advance(actor) {
+  if (!game.user.isGM) return ui.notifications.warn(L("NOIR.GmOnly"));
   const s = actor.system, lvl = s.details.level;
   if (lvl === 0) return create(actor);
   if (lvl >= NOIR.maxLevel) return ui.notifications.info(L("NOIR.MaxLevel"));
