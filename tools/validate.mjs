@@ -11,6 +11,7 @@ const err = m => { errors++; console.error("✗", m); };
 const ok = m => console.log("✓", m);
 
 const ABIL = Object.keys(NOIR.abilities);
+const TABS_ = ["class", "species", "background", "stats", "persona", "gear"];
 const classes = json("data/classes.json"), subs = json("data/subclasses.json"), species = json("data/species.json");
 const bgs = json("data/backgrounds.json"), items = json("data/items.json"), talents = json("data/talents.json");
 const system = json("system.json"), lang = json("lang/ru.json");
@@ -27,6 +28,11 @@ for (const c of classes) {
   const names = [...c.features.map(f => f.name), ...subs.filter(s => s.class === c.name).flatMap(s => s.features.map(f => f.name)), ...talents.map(t => t.name)];
   names.filter((n, i) => names.indexOf(n) !== i).forEach(n => err(`${c.name}: дубль названия умения «${n}» (ломает автовыдачу)`));
 }
+const gearAll = new Map(items.map(i => [i.name, i]));
+for (const c of classes) c.system.startItems.forEach(n => gearAll.has(n) || err(`${c.name}: нет стартового предмета «${n}»`));
+[...NOIR.starter.choiceA, ...NOIR.starter.choiceB].forEach(n => gearAll.has(n) || err(`стартовый выбор: нет предмета «${n}»`));
+if (!items.some(i => i.type === "armor" && i.system.kind === "armor" && i.system.price <= NOIR.starter.armorMax)) err("нет стартовой брони");
+if (!items.some(i => i.type === "weapon" && i.system.price <= NOIR.starter.weaponMax)) err("нет стартового оружия");
 ok(`классы: ${classes.length}`);
 // подклассы
 const per = {};
@@ -63,17 +69,26 @@ const texts = [...classes.flatMap(c => c.features.map(f => [c.name + "/" + f.nam
 for (const [n, t] of texts) if (banned.test(t)) err(`устаревшая механика в тексте «${n}»`);
 ok("устаревшие механики в текстах не найдены");
 
+// шрифты
+const { FONTS } = await import(path.join(root, "module/fonts.mjs"));
+for (const [role, list] of Object.entries(FONTS)) {
+  new Set(list.map(f => f.key)).size === list.length || err(`шрифты ${role}: дубли ключей`);
+  list.forEach(f => { if (!f.label) err(`шрифт ${role}/${f.key}: нет подписи`); if (!f.file && f.key !== "same" && !f.css) err(`шрифт ${role}/${f.key}: нет css`); if (f.google && !/^[A-Za-z0-9 ]+$/.test(f.google)) err(`шрифт ${f.key}: имя Google`); });
+}
+ok(`шрифты: ${Object.values(FONTS).map(l => l.length).join(" + ")}`);
 // локализация
 const flat = (o, p = "") => Object.entries(o).flatMap(([k, v]) => typeof v === "object" ? flat(v, p + k + ".") : [p + k]);
 const keys = new Set(flat(lang));
-const files = ["templates/actor-sheet.hbs", "templates/item-sheet.hbs", "module/config.mjs", "module/apply.mjs", "module/sheets/actor-sheet.mjs",
-  "module/sheets/item-sheet.mjs", "module/documents/actor.mjs", "module/noir.mjs"];
+const files = ["templates/actor-sheet.hbs", "templates/item-sheet.hbs", "templates/creation.hbs", "templates/picker.hbs", "module/creation.mjs", "module/creation-ctx.mjs", "module/config.mjs", "module/apply.mjs", "module/sheets/actor-sheet.mjs",
+  "module/sheets/item-sheet.mjs", "module/documents/actor.mjs", "module/noir.mjs", "module/fonts.mjs"];
 const used = new Set();
+for (const role of ["Type", "Head", "Hand"]) { used.add(`NOIR.Settings.Font${role}`); used.add(`NOIR.Settings.Font${role}Hint`); used.add(`NOIR.Settings.Font${role}Custom`); }
 for (const f of files) for (const m of read(f).matchAll(/["'`](NOIR\.[A-Za-z0-9.]+)["'`]/g)) used.add(m[1]);
-for (const f of files.slice(0, 2)) for (const m of read(f).matchAll(/localize "([A-Za-z0-9.]+)"/g)) used.add(m[1]);
+for (const f of files.filter(f => f.endsWith(".hbs"))) for (const m of read(f).matchAll(/localize "([A-Za-z0-9.]+)"/g)) used.add(m[1]);
 for (const m of read("lang/ru.json").matchAll(/"[A-Za-z0-9]+":/g)) { /* ключи читаются ниже */ }
 ["traits", "abilities", "items", "biography", "notes"].forEach(t => used.add(`NOIR.Tab.${t}`));
 [1, 2, 3].forEach(n => used.add(`NOIR.Tier.${n}`));
+TABS_.forEach(t => used.add(`NOIR.Creation.Tab.${t}`)); ["class", "species", "background", "armor", "main", "sub"].forEach(k => used.add(`NOIR.Pick.${k}`)); ["class", "species", "background", "stats"].forEach(k => used.add(`NOIR.Group.${k}`));
 ABIL.forEach(a => { used.add(`NOIR.AbilityTip.${a}`); used.add(`NOIR.Ability.${a}`); });
 for (const k of used) keys.has(k) || err(`нет ключа локализации ${k}`);
 for (const t of types) keys.has(`TYPES.Item.${t}`) || err(`нет TYPES.Item.${t}`);
@@ -94,6 +109,8 @@ system.url === "https://github.com/Easytocraft/Noir-20" || err(`url: ${system.ur
 system.manifest === `${system.url}/releases/latest/download/system.json` || err(`manifest: ${system.manifest}`);
 system.download === `${system.url}/releases/download/v${system.version}/noir-d20.zip` || err(`download не соответствует версии ${system.version}: ${system.download}`);
 read("CHANGELOG.md").includes(`## ${system.version}`) || err(`в CHANGELOG нет раздела ${system.version}`);
+for (const f of ["fonts/RunttiSP-Bold.otf", "fonts/OFL-RunttiSP.txt"]) fs.existsSync(path.join(root, f)) || err(`нет файла ${f}`);
+read("styles/noir.css").includes("RunttiSP-Bold.otf") || err("в стилях нет @font-face для Runtti SP");
 ok("манифест");
 if (errors) { console.error(`\nОшибок: ${errors}`); process.exit(1); }
 console.log("\nВсё в порядке");

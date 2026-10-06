@@ -11,7 +11,7 @@ const sheetBase = class { static DEFAULT_OPTIONS = {}; static PARTS = {}; };
 const hooks = {};
 globalThis.foundry = {
   data: { fields }, abstract: { TypeDataModel: class {} },
-  applications: { api: { HandlebarsApplicationMixin: B => class extends B {} }, sheets: { ActorSheetV2: sheetBase, ItemSheetV2: sheetBase } },
+  applications: { api: { HandlebarsApplicationMixin: B => class extends B {}, ApplicationV2: class { constructor(o) { Object.assign(this, { options: o }); } } }, sheets: { ActorSheetV2: sheetBase, ItemSheetV2: sheetBase } },
   documents: { collections: { Actors: { registerSheet() {} }, Items: { registerSheet() {} } } },
   utils: { hasProperty: (o, p) => p.split(".").reduce((a, k) => a?.[k], o) !== undefined }
 };
@@ -87,5 +87,11 @@ eq(a._weaponAbilityMod({ ability: "str" }), -1, "оружие: сила");
 eq(a.constructor._mode({ shiftKey: true }), 1, "Shift = преимущество");
 eq(a.constructor._mode({ ctrlKey: true }), -1, "Ctrl = помеха");
 
+const cc = await imp("module/creation-ctx.mjs");
+eq(cc.statsValid({ str: 2, dex: 1, int: 1, con: 0, luck: 0, cha: -1 }), true, "набор характеристик принят");
+eq(cc.statsValid({ str: 2, dex: 2, int: 1, con: 0, luck: 0, cha: -1 }), false, "повтор значения отклонён");
+eq(cc.statsValid({ str: 2, dex: 1, int: 1, con: 0, luck: 0, cha: null }), false, "неполный набор отклонён");
+const st = cc.emptyState();
+eq(cc.isDone("class", st), false, "пустой выбор класса не завершён");
 console.log(fail ? `\nПровалов: ${fail}` : "\nВсё в порядке");
 process.exit(fail ? 1 : 0);

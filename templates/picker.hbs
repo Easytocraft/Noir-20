@@ -1,0 +1,11 @@
+<div class="picker-box">
+  <div class="search"><input type="search" placeholder="{{localize 'NOIR.Search'}}" data-search autocomplete="off"><i class="glyph g-search"></i></div>
+  <div class="thead"><span class="c-name">{{localize "NOIR.Name"}}</span>{{#each cols}}<span>{{this}}</span>{{/each}}</div>
+  <div class="rows">
+    {{#each rows}}
+    <a class="row" data-action="choose" data-id="{{id}}" data-name="{{lname}}">
+      <span class="c-name"><i class="glyph g-{{glyph}}"></i>{{name}}</span>{{#each cols}}<span>{{this}}</span>{{/each}}
+    </a>
+    {{/each}}
+  </div>
+</div>

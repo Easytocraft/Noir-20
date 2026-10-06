@@ -43,7 +43,7 @@ export class GearData extends foundry.abstract.TypeDataModel {
 
 export class ClassData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
-    return { ...desc(), focus: new f.StringField({ initial: "" }), stats: six() };
+    return { ...desc(), focus: new f.StringField({ initial: "" }), stats: six(), startItems: new f.ArrayField(new f.StringField()) };
   }
 }
 

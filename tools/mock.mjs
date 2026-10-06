@@ -42,3 +42,13 @@ export function actorContext(tab = "traits", { level = 3, npc = false, gm = true
     notes: "<p>— Спросить у Лу про склад на Док-стрит.<br>— Проверить алиби Хейла.<br>— Купить новую шляпу.</p>"
   };
 }
+
+export function wizardDocs() {
+  const mk = (type, i, d) => ({ id: `${type}${i}`, type, name: d.name, system: d.system });
+  const cls = classes.map((c, i) => mk("class", i, { name: c.name, system: { ...c.system, description: `<p>${c.summary}</p>` } }));
+  const sp = species.map((c, i) => mk("species", i, c));
+  const bg = json("data/backgrounds.json").map((c, i) => mk("background", i, c));
+  const gear = items.map((c, i) => mk(c.type, i, { name: c.name, system: c.system }));
+  const features = classes.flatMap(c => c.features.map((f, i) => ({ id: `f${c.name}${i}`, name: f.name, type: "feature", system: { level: f.level, source: c.name, cost: f.cost, description: `<p>${f.desc}</p>` } })));
+  return { class: cls, species: sp, background: bg, gear, features };
+}

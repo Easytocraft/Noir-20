@@ -1,4 +1,5 @@
 import { NOIR } from "./config.mjs";
+import { CreationWizard } from "./creation.mjs";
 const MOD = "noir-d20";
 const L = k => game.i18n.localize(k);
 const ABIL = Object.keys(NOIR.abilities);
@@ -13,7 +14,7 @@ const ask = (title, content, label = "OK") => foundry.applications.api.DialogV2.
 const emptyDelta = () => ({ abilities: {}, stress: 0, evasion: 0, wounds: 0, cash: 0 });
 const clone = (doc, extra = {}) => { const o = doc.toObject(); delete o._id; return foundry.utils.mergeObject(o, extra); };
 
-async function packDocs(name) {
+export async function packDocs(name) {
   const pack = game.packs.get(`noir-d20.${name}`) ?? game.packs.get(`world.${name}`);
   if (!pack) { ui.notifications.warn(L("NOIR.NoPack")); return []; }
   return pack.getDocuments();
@@ -118,44 +119,45 @@ export async function levelUp(actor, oldLevel, newLevel) {
   if (oldLevel > 0) ui.notifications.info(game.i18n.format("NOIR.LevelUp", { actor: actor.name, level: newLevel, n: docs.length }));
 }
 
-/** «Прокачаться» с нулевого уровня: раса, класс, происхождение, характеристики. */
-async function create(actor) {
-  const [species, classes, bgs] = await Promise.all(["noir-species", "noir-classes", "noir-backgrounds"].map(packDocs));
-  if (!species.length || !classes.length || !bgs.length) return;
-  const opts = list => Object.fromEntries(list.map(x => [x.id, x.name]));
-  const r1 = await ask(L("NOIR.CreateTitle"), `<p>${L("NOIR.CreateHint")}</p>
-    <label style="display:block">${L("TYPES.Item.species")} ${sel("species", opts(species))}</label>
-    <label style="display:block">${L("TYPES.Item.class")} ${sel("class", opts(classes))}</label>
-    <label style="display:block">${L("TYPES.Item.background")} ${sel("bg", opts(bgs))}</label>`, L("NOIR.Next"));
-  if (!r1) return;
-  const spc = species.find(x => x.id === r1.species), cls = classes.find(x => x.id === r1.class), bg = bgs.find(x => x.id === r1.bg);
+const esc = t => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-  const values = [...new Set(NOIR.statArray)].sort((a, b) => b - a);
-  const from = spc.system.freeFrom?.length ? spc.system.freeFrom : ABIL;
-  let vals = Object.fromEntries(ABIL.map(k => [k, cls.system.stats[k]])), picks;
-  for (;;) {
-    const rows = ABIL.map(k => `<label style="display:block">${L(NOIR.abilities[k])} ${sel(`st_${k}`, Object.fromEntries(values.map(v => [v, sign(v)])), vals[k])}</label>`).join("");
-    const free = Array.from({ length: spc.system.freeAsi }, (_, i) => `<label style="display:block">${L("NOIR.PickAsi")} ${sel(`p${i}`, abilOpts(from))}</label>`).join("");
-    const r2 = await ask(L("NOIR.StatsTitle"), `<p>${L("NOIR.StatsHint")} (${[...NOIR.statArray].sort((a, b) => b - a).map(sign).join(", ")})</p>${rows}${free}`, L("NOIR.Done"));
-    if (!r2) return;
-    vals = Object.fromEntries(ABIL.map(k => [k, Number(r2[`st_${k}`])]));
-    picks = Array.from({ length: spc.system.freeAsi }, (_, i) => r2[`p${i}`]);
-    const ok = JSON.stringify(Object.values(vals).sort()) === JSON.stringify([...NOIR.statArray].sort());
-    if (ok) break;
-    ui.notifications.warn(L("NOIR.StatArrayInvalid"));
+/** Завершение мастера создания: применяет выбор, выдаёт снаряжение, ставит 1 уровень. */
+export async function finishCreation(actor, p) {
+  const upd = Object.fromEntries(ABIL.map(k => [`system.abilities.${k}.value`, p.stats[k]]));
+  await actor.update(upd, { noirSkip: true });
+  for (const t of ["species", "background", "class"]) await clearOld(actor, t);
+  await applySpecies(actor, p.species, p.picks);
+  await applyBackground(actor, p.bg);
+  await applyClass(actor, p.cls);
+
+  const gear = await packDocs("noir-gear");
+  const docs = [p.armor, p.main, p.sub, ...p.choices].filter(Boolean).map(d => clone(d, d.type === "armor" ? { system: { equipped: true } } : {}));
+  const counts = new Map();
+  for (const n of p.cls.system.startItems) counts.set(n, (counts.get(n) ?? 0) + 1);
+  for (const [n, q] of counts) { const g = gear.find(x => x.name === n); if (g) docs.push(clone(g, { system: { quantity: q } })); }
+  // одинаковые расходники складываем в одну стопку
+  const merged = [];
+  for (const d of docs) {
+    const same = d.type === "gear" && merged.find(m => m.type === "gear" && m.name === d.name);
+    if (same) same.system.quantity += d.system.quantity ?? 1; else merged.push(d);
   }
-
-  await actor.update(Object.fromEntries(ABIL.map(k => [`system.abilities.${k}.value`, vals[k]])), { noirSkip: true });
-  await clearOld(actor, "species"); await clearOld(actor, "background"); await clearOld(actor, "class");
-  await applySpecies(actor, spc, picks);
-  await applyBackground(actor, bg);
-  await applyClass(actor, cls);
-  await actor.update({ "system.details.level": 1, "system.details.xp": 0 });
+  await actor.createEmbeddedDocuments("Item", merged);
+  await actor.update({
+    "system.details.vice": p.vice, "system.details.drive": p.drive, "system.biography": p.past ? `<p>${esc(p.past)}</p>` : "",
+    "system.details.level": 1, "system.details.xp": 0
+  });
   await actor.update({ "system.stress.value": 0, "system.wounds.value": 0 }, { noirSkip: true });
   await ChatMessage.create({
     speaker: ChatMessage.getSpeaker({ actor }),
-    content: `<h3>${L("NOIR.FileOpened")}</h3><p>${spc.name} · ${cls.name} · ${bg.name}</p>`
+    content: `<h3>${L("NOIR.FileOpened")}</h3><p>${p.species.name} · ${p.cls.name} · ${p.bg.name}</p>`
   });
+}
+
+async function create(actor) {
+  const id = `noir-creation-${actor.id}`;
+  const open = foundry.applications.instances.get(id);
+  if (open) return open.bringToFront();
+  return new CreationWizard(actor).render(true);
 }
 
 /** Диалог повышения уровня: цена роста, подкласс, приём или характеристики. */

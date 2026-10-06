@@ -2,7 +2,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import { renderTemplate } from "./render.mjs";
-import { actorContext } from "./mock.mjs";
+import { actorContext, wizardDocs } from "./mock.mjs";
+import { emptyState, buildContext, buildPicker, TABS, isDone, statsValid } from "../module/creation-ctx.mjs";
 let fail = 0;
 const out = process.argv.includes("--write") ? process.argv[process.argv.indexOf("--write") + 1] : null;
 if (out) fs.mkdirSync(out, { recursive: true });
@@ -16,6 +17,31 @@ for (const tab of ["traits", "abilities", "items", "biography", "notes"]) {
     else console.log(`✓ лист актора, вкладка ${tab}${npc ? " (НПС)" : gm ? "" : " (игрок)"}`);
     if (out && !npc && gm) fs.writeFileSync(path.join(out, `${tab}.html`), html);
   }
+}
+// --- мастер создания и обозреватель
+const lang0 = JSON.parse(fs.readFileSync(new URL("../lang/ru.json", import.meta.url), "utf8"));
+const Lk = k => k.split(".").reduce((a, p) => a?.[p], lang0) ?? k;
+const D = wizardDocs();
+const full = emptyState();
+Object.assign(full, { class: D.class[0], species: D.species[0], background: D.background[0], vice: "Выпивка", drive: "Правда", past: "Ушёл из участка.",
+  armor: D.gear.find(g => g.type === "armor"), main: D.gear.find(g => g.type === "weapon"), sub: null });
+full.picks = ["int"]; full.choiceA = D.gear.find(g => g.name === "Бутылка виски"); full.choiceB = D.gear.find(g => g.name === "Отмычки");
+for (const k of Object.keys(D.class[0].system.stats)) full.stats[k] = D.class[0].system.stats[k];
+for (const tab of TABS) {
+  for (const [label, st] of [["полное", { ...full, tab }], ["пустое", { ...emptyState(), tab }]]) {
+    const ctx = buildContext(st, D, Lk);
+    const { html, problems } = renderTemplate("templates/creation.hbs", ctx);
+    const bad = [...problems, ...(html.includes("undefined") ? ["undefined в HTML"] : [])];
+    if (bad.length) { fail++; console.error(`✗ мастер, вкладка ${tab} (${label}): ${bad.join("; ")}`); } else console.log(`✓ мастер, вкладка ${tab} (${label})`);
+    if (out && label === "полное") fs.writeFileSync(path.join(out, `wizard-${tab}.html`), html);
+  }
+}
+if (!TABS.every(t => isDone(t, full))) { fail++; console.error("✗ полное состояние мастера не проходит проверки"); }
+if (statsValid({ str: 2, dex: 2, int: 1, con: 0, luck: 0, cha: -1 })) { fail++; console.error("✗ набор характеристик с повтором принят"); }
+for (const [kind, docs] of [["class", D.class], ["species", D.species], ["background", D.background], ["armor", D.gear.filter(g => g.type === "armor")], ["weapon", D.gear.filter(g => g.type === "weapon")]]) {
+  const { html, problems } = renderTemplate("templates/picker.hbs", buildPicker(kind, docs, Lk));
+  if (problems.length || html.includes("undefined")) { fail++; console.error(`✗ обозреватель ${kind}: ${problems.join("; ")}`); } else console.log(`✓ обозреватель ${kind}`);
+  if (out && kind === "class") fs.writeFileSync(path.join(out, "picker.html"), html);
 }
 const { NOIR } = await import("../module/config.mjs");
 const lang = JSON.parse(fs.readFileSync(new URL("../lang/ru.json", import.meta.url), "utf8")).NOIR;

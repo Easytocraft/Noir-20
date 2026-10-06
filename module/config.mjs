@@ -18,6 +18,11 @@ export const NOIR = {
   statMin: -3, statMax: 5, maxLevel: 10,
   weaponAbilities: { str: "NOIR.Ability.str", dex: "NOIR.Ability.dex", finesse: "NOIR.Finesse" },
   armorKinds: { armor: "NOIR.Armor", shield: "NOIR.Shield" },
+  starter: {
+    armorMax: 25, weaponMax: 40,
+    choiceA: ["Бутылка виски", "Пачка сигарет", "Аптечка (бинты и йод)", "Фонарик"],
+    choiceB: ["Отмычки", "Фальшивые документы", "Бинокль", "Монтировка", "Наручники"]
+  },
   vices: ["Выпивка", "Азарт", "Табак", "Романы", "Ложь", "Лёгкие деньги"],
   drives: ["Месть", "Искупление", "Правда", "Деньги", "Семья", "Выжить"],
   scars: {

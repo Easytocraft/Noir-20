@@ -1,0 +1,139 @@
+<div class="wizard">
+  <nav class="dtabs">
+    {{#each tabs}}<a class="dtab {{#if active}}active{{/if}} {{#if done}}done{{/if}}" data-action="goTab" data-tab="{{id}}"><span class="n">{{n}}</span>{{label}}</a>{{/each}}
+  </nav>
+  <div class="paper-wrap"><section class="paper">
+    <div class="body">
+
+    {{#if t.class}}
+      <div class="group">
+        <h4 class="legend"><span>{{localize "NOIR.Group.class"}}</span></h4>
+        <div class="slot {{#if cls}}filled{{/if}}" data-action="pick" data-kind="class" data-drop="class">
+          {{#if cls}}<i class="glyph g-class big"></i><div class="info"><b>{{cls.name}}</b><span>{{cls.focus}}</span></div><a class="x" data-action="clear" data-kind="class">✕</a>
+          {{else}}<span class="ph">{{localize "NOIR.Pick.class"}}</span><span class="plus">＋</span>{{/if}}
+        </div>
+      </div>
+      {{#if cls}}
+      <div class="detail">
+        <p class="sum">{{{cls.summary}}}</p>
+        <h4 class="legend small"><span>{{localize "NOIR.FirstLevel"}}</span></h4>
+        {{#each cls.features}}<div class="feat"><b>{{name}}</b>{{#if cost}} <em>({{cost}})</em>{{/if}}<div>{{{desc}}}</div></div>{{/each}}
+      </div>
+      {{/if}}
+    {{/if}}
+
+    {{#if t.species}}
+      <div class="group">
+        <h4 class="legend"><span>{{localize "NOIR.Group.species"}}</span></h4>
+        <div class="slot {{#if species}}filled{{/if}}" data-action="pick" data-kind="species" data-drop="species">
+          {{#if species}}<i class="glyph g-species big"></i><div class="info"><b>{{species.name}}</b><span>{{species.asi}}</span></div><a class="x" data-action="clear" data-kind="species">✕</a>
+          {{else}}<span class="ph">{{localize "NOIR.Pick.species"}}</span><span class="plus">＋</span>{{/if}}
+        </div>
+      </div>
+      {{#if species}}
+      <div class="detail">
+        {{#each species.picks}}
+        <label class="pick">{{localize "NOIR.PickAsi"}}
+          <select data-bind="pick.{{i}}"><option value="">—</option>{{#each options}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select></label>
+        {{/each}}
+        <div class="desc">{{{species.desc}}}</div>
+      </div>
+      {{/if}}
+    {{/if}}
+
+    {{#if t.background}}
+      <div class="group">
+        <h4 class="legend"><span>{{localize "NOIR.Group.background"}}</span></h4>
+        <div class="slot {{#if background}}filled{{/if}}" data-action="pick" data-kind="background" data-drop="background">
+          {{#if background}}<i class="glyph g-background big"></i><div class="info"><b>{{background.name}}</b><span>${{background.cash}}</span></div><a class="x" data-action="clear" data-kind="background">✕</a>
+          {{else}}<span class="ph">{{localize "NOIR.Pick.background"}}</span><span class="plus">＋</span>{{/if}}
+        </div>
+      </div>
+      {{#if background}}
+      <div class="detail">
+        <div class="desc">{{{background.desc}}}</div>
+        <h4 class="legend small"><span>{{localize "NOIR.StartItems"}}</span></h4>
+        <div class="chips">{{#each background.items}}<span class="pill">{{this}}</span>{{/each}}<span class="pill cash">${{background.cash}}</span></div>
+      </div>
+      {{/if}}
+    {{/if}}
+
+    {{#if t.stats}}
+      <div class="group">
+        <h4 class="legend"><span>{{localize "NOIR.Group.stats"}} {{statsAssigned}}/6</span></h4>
+        <div class="recommend">
+          <h4 class="legend small"><span>{{localize "NOIR.Recommended"}}</span></h4>
+          {{#if hasClass}}
+          <div class="chips">{{#each recommended}}<span class="pill">{{label}} {{value}}</span>{{/each}}</div>
+          <button type="button" class="btn ghost" data-action="recommended">{{localize "NOIR.UseRecommended"}}</button>
+          {{else}}<p class="hint">{{localize "NOIR.PickClassFirst"}}</p>{{/if}}
+        </div>
+        <div class="cells">
+          {{#each cells}}
+          <div class="cell">
+            <label>{{label}}</label>
+            <select data-bind="stat.{{key}}">{{#each options}}<option value="{{v}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>
+            <small>{{#if bonus}}{{bonusText}} {{localize "NOIR.FromRace"}} → <b>{{final}}</b>{{/if}}</small>
+          </div>
+          {{/each}}
+        </div>
+        {{#unless statsOk}}<p class="hint">{{localize "NOIR.StatsHint"}}</p>{{/unless}}
+      </div>
+    {{/if}}
+
+    {{#if t.persona}}
+      <div class="group">
+        <h4 class="legend"><span>{{localize "NOIR.Vice"}}</span></h4>
+        <div class="chips big">{{#each vices}}<a class="chip {{#if on}}on{{/if}}" data-action="chip" data-field="vice" data-value="{{value}}">{{value}}</a>{{/each}}</div>
+        <input type="text" class="wide" data-bind="vice" value="{{vice}}" placeholder="{{localize 'NOIR.Custom'}}">
+      </div>
+      <div class="group">
+        <h4 class="legend"><span>{{localize "NOIR.Drive"}}</span></h4>
+        <div class="chips big">{{#each drives}}<a class="chip {{#if on}}on{{/if}}" data-action="chip" data-field="drive" data-value="{{value}}">{{value}}</a>{{/each}}</div>
+        <input type="text" class="wide" data-bind="drive" value="{{drive}}" placeholder="{{localize 'NOIR.Custom'}}">
+      </div>
+      <div class="group">
+        <h4 class="legend"><span>{{localize "NOIR.PastLabel"}}</span></h4>
+        <textarea data-bind="past" rows="4" placeholder="{{localize 'NOIR.PastHint'}}">{{past}}</textarea>
+      </div>
+    {{/if}}
+
+    {{#if t.gear}}
+      <div class="group">
+        <h4 class="legend"><span>{{localize "NOIR.Armor"}}</span></h4>
+        <div class="slot {{#if armor}}filled{{/if}}" data-action="pick" data-kind="armor" data-drop="armor">
+          {{#if armor}}<i class="glyph g-armor big"></i><div class="info"><b>{{armor.name}}</b><span>{{armor.detail}}</span></div><a class="x" data-action="clear" data-kind="armor">✕</a>
+          {{else}}<span class="ph">{{localize "NOIR.Pick.armor"}}</span><span class="plus">＋</span>{{/if}}
+        </div>
+      </div>
+      <div class="group">
+        <h4 class="legend"><span>{{localize "NOIR.Weapons"}}</span></h4>
+        <div class="slot {{#if main}}filled{{/if}}" data-action="pick" data-kind="main" data-drop="main">
+          {{#if main}}<i class="glyph g-weapon big"></i><div class="info"><b>{{main.name}}</b><span>{{main.detail}}</span></div><a class="x" data-action="clear" data-kind="main">✕</a>
+          {{else}}<span class="ph">{{localize "NOIR.Pick.main"}}</span><span class="plus">＋</span>{{/if}}
+        </div>
+        <div class="slot {{#if sub}}filled{{/if}}" data-action="pick" data-kind="sub" data-drop="sub">
+          {{#if sub}}<i class="glyph g-weapon big"></i><div class="info"><b>{{sub.name}}</b><span>{{sub.detail}}</span></div><a class="x" data-action="clear" data-kind="sub">✕</a>
+          {{else}}<span class="ph">{{localize "NOIR.Pick.sub"}}</span><span class="plus">＋</span>{{/if}}
+        </div>
+      </div>
+      <div class="three">
+        <div class="col"><h4 class="legend small"><span>{{localize "NOIR.StartItems"}}</span></h4>
+          {{#each kitItems}}<div class="opt fixed">{{this}}</div>{{/each}}
+          <div class="opt fixed cash">${{cash}}</div></div>
+        <div class="col"><h4 class="legend small"><span>{{localize "NOIR.Choice"}}</span></h4>
+          {{#each choiceA}}<a class="opt {{#if on}}on{{/if}}" data-action="chip" data-field="choiceA" data-value="{{id}}">{{name}}</a>{{/each}}</div>
+        <div class="col"><h4 class="legend small"><span>{{localize "NOIR.Choice"}}</span></h4>
+          {{#each choiceB}}<a class="opt {{#if on}}on{{/if}}" data-action="chip" data-field="choiceB" data-value="{{id}}">{{name}}</a>{{/each}}</div>
+      </div>
+    {{/if}}
+
+    </div>
+    <footer class="foot">
+      <button type="button" class="btn ghost" data-action="cancel">{{localize "NOIR.Cancel"}}</button>
+      {{#if canBack}}<button type="button" class="btn ghost" data-action="back">{{localize "NOIR.Back"}}</button>{{/if}}
+      {{#if isLast}}<button type="button" class="btn primary" data-action="finish" {{#unless allDone}}disabled{{/unless}}>{{localize "NOIR.Finish"}}</button>
+      {{else}}<button type="button" class="btn primary" data-action="next" {{#unless canNext}}disabled{{/unless}}>{{localize "NOIR.Next"}}</button>{{/if}}
+    </footer>
+  </section></div>
+</div>
