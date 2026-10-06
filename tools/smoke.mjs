@@ -11,7 +11,13 @@ const sheetBase = class { static DEFAULT_OPTIONS = {}; static PARTS = {}; };
 const hooks = {};
 globalThis.foundry = {
   data: { fields }, abstract: { TypeDataModel: class {} },
-  applications: { api: { HandlebarsApplicationMixin: B => class extends B {}, ApplicationV2: class { constructor(o) { Object.assign(this, { options: o }); } } }, sheets: { ActorSheetV2: sheetBase, ItemSheetV2: sheetBase } },
+  applications: { api: { HandlebarsApplicationMixin: B => class extends B {}, ApplicationV2: class {
+        constructor(o) { this.options = o; }
+        // публичные геттеры настоящего ApplicationV2 (запись в них из подкласса бросает TypeError)
+        get state() { return 0; } get element() { return null; } get id() { return this.options.id; } get rendered() { return false; }
+        get title() { return ""; } get position() { return {}; } get form() { return null; } get window() { return {}; } get hasFrame() { return true; }
+        get classList() { return []; } get minimized() { return false; } get windowId() { return ""; }
+      } }, sheets: { ActorSheetV2: sheetBase, ItemSheetV2: sheetBase } },
   documents: { collections: { Actors: { registerSheet() {} }, Items: { registerSheet() {} } } },
   utils: { hasProperty: (o, p) => p.split(".").reduce((a, k) => a?.[k], o) !== undefined }
 };
@@ -87,6 +93,12 @@ eq(a._weaponAbilityMod({ ability: "str" }), -1, "оружие: сила");
 eq(a.constructor._mode({ shiftKey: true }), 1, "Shift = преимущество");
 eq(a.constructor._mode({ ctrlKey: true }), -1, "Ctrl = помеха");
 
+globalThis.game.i18n = { localize: k => k, format: k => k };
+const cw = await imp("module/creation.mjs");
+let wiz, pick, err = null;
+try { wiz = new cw.CreationWizard({ id: "abc", name: "Тест" }); pick = new cw.DocPicker({ kind: "class", docs: [], onPick() {} }); } catch (e) { err = e; }
+eq(err?.message ?? "ok", "ok", "окна мастера и обозревателя создаются без конфликта с ApplicationV2");
+eq(typeof wiz?.draft?.tab, "string", "состояние мастера хранится в draft");
 const cc = await imp("module/creation-ctx.mjs");
 eq(cc.statsValid({ str: 2, dex: 1, int: 1, con: 0, luck: 0, cha: -1 }), true, "набор характеристик принят");
 eq(cc.statsValid({ str: 2, dex: 2, int: 1, con: 0, luck: 0, cha: -1 }), false, "повтор значения отклонён");

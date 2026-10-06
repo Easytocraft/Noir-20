@@ -155,7 +155,7 @@ export async function finishCreation(actor, p) {
 
 async function create(actor) {
   const id = `noir-creation-${actor.id}`;
-  const open = foundry.applications.instances.get(id);
+  const open = foundry.applications?.instances?.get?.(id);
   if (open) return open.bringToFront();
   return new CreationWizard(actor).render(true);
 }

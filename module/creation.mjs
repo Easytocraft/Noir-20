@@ -47,7 +47,7 @@ export class CreationWizard extends HandlebarsApplicationMixin(ApplicationV2) {
 
   constructor(actor) {
     super({ id: `noir-creation-${actor.id}` });
-    this.actor = actor; this.state = emptyState(); this.docs = null;
+    this.actor = actor; this.draft = emptyState(); this.docs = null; // не `state`: это геттер ApplicationV2
   }
   get title() { return `${L("NOIR.CreateTitle")}: ${this.actor.name}`; }
 
@@ -62,7 +62,7 @@ export class CreationWizard extends HandlebarsApplicationMixin(ApplicationV2) {
 
   async _prepareContext() {
     if (!(await this.#load())) { this.close(); return {}; }
-    return buildContext(this.state, this.docs, L);
+    return buildContext(this.draft, this.docs, L);
   }
 
   _onRender() {
@@ -80,7 +80,7 @@ export class CreationWizard extends HandlebarsApplicationMixin(ApplicationV2) {
         const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(ev);
         const doc = data?.uuid ? await fromUuid(data.uuid) : null;
         const kind = slot.dataset.drop;
-        if (doc?.type === SLOT_TYPE[kind]) { this.state[kind] = doc; this.render(); }
+        if (doc?.type === SLOT_TYPE[kind]) { this.draft[kind] = doc; this.render(); }
         else ui.notifications.warn(L(`NOIR.Pick.${kind}`));
       });
     }
@@ -89,28 +89,28 @@ export class CreationWizard extends HandlebarsApplicationMixin(ApplicationV2) {
   #refreshButtons() {
     const next = this.element.querySelector("[data-action=next],[data-action=finish]");
     if (!next) return;
-    const last = this.state.tab === TABS.at(-1);
-    next.disabled = last ? !TABS.every(t => isDone(t, this.state)) : !isDone(this.state.tab, this.state);
+    const last = this.draft.tab === TABS.at(-1);
+    next.disabled = last ? !TABS.every(t => isDone(t, this.draft)) : !isDone(this.draft.tab, this.draft);
   }
 
   #set(path, value) {
-    const st = this.state;
+    const st = this.draft;
     if (path.startsWith("stat.")) st.stats[path.slice(5)] = value === "" ? null : Number(value);
     else if (path.startsWith("pick.")) st.picks[Number(path.slice(5))] = value || null;
     else st[path] = value;
   }
 
-  static goTab(event, target) { this.state.tab = target.dataset.tab; return this.render(); }
-  static next() { this.state.tab = TABS[Math.min(TABS.length - 1, TABS.indexOf(this.state.tab) + 1)]; return this.render(); }
-  static back() { this.state.tab = TABS[Math.max(0, TABS.indexOf(this.state.tab) - 1)]; return this.render(); }
+  static goTab(event, target) { this.draft.tab = target.dataset.tab; return this.render(); }
+  static next() { this.draft.tab = TABS[Math.min(TABS.length - 1, TABS.indexOf(this.draft.tab) + 1)]; return this.render(); }
+  static back() { this.draft.tab = TABS[Math.max(0, TABS.indexOf(this.draft.tab) - 1)]; return this.render(); }
   static cancel() { return this.close(); }
-  static clear(event, target) { this.state[target.dataset.kind] = null; if (target.dataset.kind === "species") this.state.picks = []; return this.render(); }
-  static recommended() { const rec = this.state.class?.system.stats; if (rec) for (const k of ABIL) this.state.stats[k] = rec[k]; return this.render(); }
+  static clear(event, target) { this.draft[target.dataset.kind] = null; if (target.dataset.kind === "species") this.draft.picks = []; return this.render(); }
+  static recommended() { const rec = this.draft.class?.system.stats; if (rec) for (const k of ABIL) this.draft.stats[k] = rec[k]; return this.render(); }
 
   static chip(event, target) {
     const { field, value } = target.dataset;
-    if (field === "choiceA" || field === "choiceB") this.state[field] = this.docs.gear.find(d => d.id === value) ?? null;
-    else this.state[field] = value;
+    if (field === "choiceA" || field === "choiceB") this.draft[field] = this.docs.gear.find(d => d.id === value) ?? null;
+    else this.draft[field] = value;
     return this.render();
   }
 
@@ -118,17 +118,18 @@ export class CreationWizard extends HandlebarsApplicationMixin(ApplicationV2) {
     const kind = target.dataset.kind, type = SLOT_TYPE[kind];
     const docs = type === "weapon" ? this.docs.starters.weapon : kind === "armor" ? this.docs.starters.armor : this.docs[type];
     const picker = new DocPicker({ kind: type, docs, onPick: doc => {
-      if (kind === "species" && this.state.species?.id !== doc.id) this.state.picks = [];
-      this.state[kind] = doc; this.render();
+      if (kind === "species" && this.draft.species?.id !== doc.id) this.draft.picks = [];
+      this.draft[kind] = doc; this.render();
     } });
     return picker.render(true);
   }
 
   static async finish() {
-    if (!TABS.every(t => isDone(t, this.state))) return;
-    const st = this.state;
+    if (!TABS.every(t => isDone(t, this.draft))) return;
+    const st = this.draft;
     await this.close();
-    await finishCreation(this.actor, { cls: st.class, species: st.species, bg: st.background, stats: st.stats, picks: st.picks,
-      vice: st.vice.trim(), drive: st.drive.trim(), past: st.past.trim(), armor: st.armor, main: st.main, sub: st.sub, choices: [st.choiceA, st.choiceB] });
+    try { await finishCreation(this.actor, { cls: st.class, species: st.species, bg: st.background, stats: st.stats, picks: st.picks,
+      vice: st.vice.trim(), drive: st.drive.trim(), past: st.past.trim(), armor: st.armor, main: st.main, sub: st.sub, choices: [st.choiceA, st.choiceB] }); }
+    catch (err) { console.error("noir-d20 | finishCreation", err); ui.notifications.error(`Нуар d20: ${err.message}`); }
   }
 }

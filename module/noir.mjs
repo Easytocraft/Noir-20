@@ -5,7 +5,7 @@ import { WeaponData, ArmorData, GearData, ClassData, SpeciesData, BackgroundData
 import { NoirActorSheet } from "./sheets/actor-sheet.mjs";
 import { NoirItemSheet } from "./sheets/item-sheet.mjs";
 import { seed } from "./seed.mjs";
-import { revert, levelUp } from "./apply.mjs";
+import { revert, levelUp, advance } from "./apply.mjs";
 import { applyFonts, registerFontSettings } from "./fonts.mjs";
 
 Hooks.once("init", () => {
@@ -29,7 +29,7 @@ Hooks.once("init", () => {
 });
 
 Hooks.once("ready", async () => {
-  game.noir = { seed, applyFonts };
+  game.noir = { seed, applyFonts, advance };
   applyFonts();
   if (game.user.isGM && !game.settings.get("noir-d20", "seeded")) {
     await seed();

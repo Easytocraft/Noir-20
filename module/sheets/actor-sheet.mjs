@@ -98,5 +98,8 @@ export class NoirActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   static setWound(event, target) { return this.document.update(NoirActorSheet.#toggle("system.wounds.value", this.document.system.wounds.value, Number(target.dataset.index))); }
   static setStress(event, target) { return this.document.update(NoirActorSheet.#toggle("system.stress.value", this.document.system.stress.value, Number(target.dataset.index))); }
   static setMark(event, target) { if (!game.user.isGM) return; return this.document.update(NoirActorSheet.#toggle("system.details.xp", this.document.system.details.xp, Number(target.dataset.index))); }
-  static advance() { return advance(this.document); }
+  static async advance() {
+    try { return await advance(this.document); }
+    catch (err) { console.error("noir-d20 | advance", err); ui.notifications.error(`Нуар d20: ${err.message}`); }
+  }
 }
