@@ -35,7 +35,7 @@ const eq = (a, b, m) => { if (a !== b) { fail++; console.error(`✗ ${m}: ${a} �
 await imp("module/noir.mjs");
 hooks.init();
 eq(Object.keys(CONFIG.Actor.dataModels).join(), "character,npc", "модели акторов зарегистрированы");
-eq(Object.keys(CONFIG.Item.dataModels).length, 8, "модели предметов зарегистрированы");
+eq(Object.keys(CONFIG.Item.dataModels).length, 7, "модели предметов зарегистрированы");
 for (const M of [...Object.values(CONFIG.Actor.dataModels), ...Object.values(CONFIG.Item.dataModels)]) M.defineSchema();
 console.log("✓ схемы данных строятся");
 
@@ -52,6 +52,14 @@ const mk = (level, v = {}, items = [], type = "character") => {
 };
 const armor = (kind, protection, evasion) => ({ type: "armor", system: { kind, protection, evasion, equipped: true } });
 const D = a => (a.prepareDerivedData(), a.system);
+const modItem = (type, m) => ({ type, system: { mods: { evasion: 0, wounds: 0, stress: 0, threshold: 0, ...m } } });
+{
+  const s2 = D(mk(1, {}, [modItem("class", { wounds: 2, evasion: -1 }), modItem("feature", { wounds: 1 }), modItem("feature", { threshold: 1, stress: 2 })]));
+  eq(s2.evasion, 9, "модификаторы: Уклонение от класса");
+  eq(s2.wounds.max, 9, "модификаторы: раны от класса и особенности");
+  eq(s2.thresholds.minor, 5, "модификаторы: порог урона от особенности");
+  eq(s2.stress.max, 8, "модификаторы: запас Стресса");
+}
 
 let s = D(mk(0));
 eq(s.evasion, 10, "уклонение 0 ур.");

@@ -9,15 +9,24 @@
       <div class="group">
         <h4 class="legend"><span>{{localize "NOIR.Group.class"}}</span></h4>
         <div class="slot {{#if cls}}filled{{/if}}" data-action="pick" data-kind="class" data-drop="class">
-          {{#if cls}}<i class="glyph g-class big"></i><div class="info"><b>{{cls.name}}</b><span>{{cls.focus}}</span></div><a class="x" data-action="clear" data-kind="class">✕</a>
+          {{#if cls}}{{#if cls.img}}<img class="pic" src="{{cls.img}}" alt="">{{else}}<i class="glyph g-class big"></i>{{/if}}<div class="info"><b>{{cls.name}}</b><span>{{cls.focus}}</span></div><a class="x" data-action="clear" data-kind="class">✕</a>
           {{else}}<span class="ph">{{localize "NOIR.Pick.class"}}</span><span class="plus">＋</span>{{/if}}
         </div>
       </div>
       {{#if cls}}
       <div class="detail">
         <p class="sum">{{{cls.summary}}}</p>
-        <h4 class="legend small"><span>{{localize "NOIR.FirstLevel"}}</span></h4>
-        {{#each cls.features}}<div class="feat"><b>{{name}}</b>{{#if cost}} <em>({{cost}})</em>{{/if}}<div>{{{desc}}}</div></div>{{/each}}
+        <div class="chips"><span class="pill">{{localize "NOIR.Evasion"}} {{cls.evasion}}</span><span class="pill">{{localize "NOIR.Wounds"}} {{cls.wounds}}</span><span class="pill">{{localize "NOIR.Stress"}} {{cls.stress}}</span></div>
+        <h4 class="legend small"><span>{{localize "NOIR.ClassTrait"}}</span></h4>
+        {{#each cls.trait}}<div class="feat"><img class="pic s" src="{{img}}" alt=""><b>{{name}}</b>{{#if modsText}} <em>({{modsText}})</em>{{/if}}<div>{{{desc}}}</div></div>{{/each}}
+        <h4 class="legend small"><span>{{localize "NOIR.ChooseAbilities"}}: {{abilitiesLeft}}</span></h4>
+        <div class="cards">
+          {{#each abilities}}
+          <a class="card {{#if on}}on{{/if}}" data-action="toggleAbility" data-id="{{id}}">
+            <img class="pic" src="{{img}}" alt=""><div class="txt"><b>{{name}}</b>{{#if cost}}<em>{{cost}}</em>{{/if}}<span>{{{desc}}}</span></div>
+          </a>
+          {{/each}}
+        </div>
       </div>
       {{/if}}
     {{/if}}
@@ -26,17 +35,40 @@
       <div class="group">
         <h4 class="legend"><span>{{localize "NOIR.Group.species"}}</span></h4>
         <div class="slot {{#if species}}filled{{/if}}" data-action="pick" data-kind="species" data-drop="species">
-          {{#if species}}<i class="glyph g-species big"></i><div class="info"><b>{{species.name}}</b><span>{{species.asi}}</span></div><a class="x" data-action="clear" data-kind="species">✕</a>
+          {{#if species}}{{#if species.img}}<img class="pic" src="{{species.img}}" alt="">{{else}}<i class="glyph g-species big"></i>{{/if}}<div class="info"><b>{{species.name}}</b><span>{{species.size}}</span></div><a class="x" data-action="clear" data-kind="species">✕</a>
           {{else}}<span class="ph">{{localize "NOIR.Pick.species"}}</span><span class="plus">＋</span>{{/if}}
         </div>
+        <a class="chip toggle {{#if mixed}}on{{/if}}" data-action="toggleMixed">{{#if mixed}}☑{{else}}☐{{/if}} {{localize "NOIR.Mixed"}}</a>
+        {{#if mixed}}
+        <div class="slot {{#if species2}}filled{{/if}}" data-action="pick" data-kind="species2" data-drop="species2">
+          {{#if species2}}{{#if species2.img}}<img class="pic" src="{{species2.img}}" alt="">{{else}}<i class="glyph g-species big"></i>{{/if}}<div class="info"><b>{{species2.name}}</b><span>{{species2.size}}</span></div><a class="x" data-action="clear" data-kind="species2">✕</a>
+          {{else}}<span class="ph">{{localize "NOIR.Pick.species2"}}</span><span class="plus">＋</span>{{/if}}
+        </div>
+        {{/if}}
       </div>
       {{#if species}}
       <div class="detail">
-        {{#each species.picks}}
-        <label class="pick">{{localize "NOIR.PickAsi"}}
-          <select data-bind="pick.{{i}}"><option value="">—</option>{{#each options}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select></label>
-        {{/each}}
         <div class="desc">{{{species.desc}}}</div>
+        <h4 class="legend small"><span>{{species.name}}: {{#if mixed}}{{localize "NOIR.PickOneTrait"}}{{else}}{{localize "NOIR.Features"}}{{/if}}</span></h4>
+        <div class="cards">
+          {{#each species.traits}}
+          <a class="card {{#if on}}on{{/if}}" {{#if ../mixed}}data-action="pickTrait" data-which="A" data-id="{{id}}"{{/if}}>
+            <img class="pic" src="{{img}}" alt=""><div class="txt"><b>{{name}}</b>{{#if modsText}}<em>{{modsText}}</em>{{/if}}<span>{{{desc}}}</span></div>
+          </a>
+          {{/each}}
+        </div>
+      </div>
+      {{/if}}
+      {{#if species2}}
+      <div class="detail">
+        <h4 class="legend small"><span>{{species2.name}}: {{localize "NOIR.PickOneTrait"}}</span></h4>
+        <div class="cards">
+          {{#each species2.traits}}
+          <a class="card {{#if on}}on{{/if}}" data-action="pickTrait" data-which="B" data-id="{{id}}">
+            <img class="pic" src="{{img}}" alt=""><div class="txt"><b>{{name}}</b>{{#if modsText}}<em>{{modsText}}</em>{{/if}}<span>{{{desc}}}</span></div>
+          </a>
+          {{/each}}
+        </div>
       </div>
       {{/if}}
     {{/if}}
@@ -45,13 +77,15 @@
       <div class="group">
         <h4 class="legend"><span>{{localize "NOIR.Group.background"}}</span></h4>
         <div class="slot {{#if background}}filled{{/if}}" data-action="pick" data-kind="background" data-drop="background">
-          {{#if background}}<i class="glyph g-background big"></i><div class="info"><b>{{background.name}}</b><span>${{background.cash}}</span></div><a class="x" data-action="clear" data-kind="background">✕</a>
+          {{#if background}}{{#if background.img}}<img class="pic" src="{{background.img}}" alt="">{{else}}<i class="glyph g-background big"></i>{{/if}}<div class="info"><b>{{background.name}}</b><span>${{background.cash}}</span></div><a class="x" data-action="clear" data-kind="background">✕</a>
           {{else}}<span class="ph">{{localize "NOIR.Pick.background"}}</span><span class="plus">＋</span>{{/if}}
         </div>
       </div>
       {{#if background}}
       <div class="detail">
         <div class="desc">{{{background.desc}}}</div>
+        <h4 class="legend small"><span>{{localize "NOIR.OriginTrait"}}</span></h4>
+        {{#each background.trait}}<div class="feat"><img class="pic s" src="{{img}}" alt=""><b>{{name}}</b><div>{{{desc}}}</div></div>{{/each}}
         <h4 class="legend small"><span>{{localize "NOIR.StartItems"}}</span></h4>
         <div class="chips">{{#each background.items}}<span class="pill">{{this}}</span>{{/each}}<span class="pill cash">${{background.cash}}</span></div>
       </div>
@@ -73,7 +107,7 @@
           <div class="cell">
             <label>{{label}}</label>
             <select data-bind="stat.{{key}}">{{#each options}}<option value="{{v}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}</select>
-            <small>{{#if bonus}}{{bonusText}} {{localize "NOIR.FromRace"}} → <b>{{final}}</b>{{/if}}</small>
+            
           </div>
           {{/each}}
         </div>
@@ -102,18 +136,18 @@
       <div class="group">
         <h4 class="legend"><span>{{localize "NOIR.Armor"}}</span></h4>
         <div class="slot {{#if armor}}filled{{/if}}" data-action="pick" data-kind="armor" data-drop="armor">
-          {{#if armor}}<i class="glyph g-armor big"></i><div class="info"><b>{{armor.name}}</b><span>{{armor.detail}}</span></div><a class="x" data-action="clear" data-kind="armor">✕</a>
+          {{#if armor}}{{#if armor.img}}<img class="pic" src="{{armor.img}}" alt="">{{else}}<i class="glyph g-armor big"></i>{{/if}}<div class="info"><b>{{armor.name}}</b><span>{{armor.detail}}</span></div><a class="x" data-action="clear" data-kind="armor">✕</a>
           {{else}}<span class="ph">{{localize "NOIR.Pick.armor"}}</span><span class="plus">＋</span>{{/if}}
         </div>
       </div>
       <div class="group">
         <h4 class="legend"><span>{{localize "NOIR.Weapons"}}</span></h4>
         <div class="slot {{#if main}}filled{{/if}}" data-action="pick" data-kind="main" data-drop="main">
-          {{#if main}}<i class="glyph g-weapon big"></i><div class="info"><b>{{main.name}}</b><span>{{main.detail}}</span></div><a class="x" data-action="clear" data-kind="main">✕</a>
+          {{#if main}}{{#if main.img}}<img class="pic" src="{{main.img}}" alt="">{{else}}<i class="glyph g-weapon big"></i>{{/if}}<div class="info"><b>{{main.name}}</b><span>{{main.detail}}</span></div><a class="x" data-action="clear" data-kind="main">✕</a>
           {{else}}<span class="ph">{{localize "NOIR.Pick.main"}}</span><span class="plus">＋</span>{{/if}}
         </div>
         <div class="slot {{#if sub}}filled{{/if}}" data-action="pick" data-kind="sub" data-drop="sub">
-          {{#if sub}}<i class="glyph g-weapon big"></i><div class="info"><b>{{sub.name}}</b><span>{{sub.detail}}</span></div><a class="x" data-action="clear" data-kind="sub">✕</a>
+          {{#if sub}}{{#if sub.img}}<img class="pic" src="{{sub.img}}" alt="">{{else}}<i class="glyph g-weapon big"></i>{{/if}}<div class="info"><b>{{sub.name}}</b><span>{{sub.detail}}</span></div><a class="x" data-action="clear" data-kind="sub">✕</a>
           {{else}}<span class="ph">{{localize "NOIR.Pick.sub"}}</span><span class="plus">＋</span>{{/if}}
         </div>
       </div>
@@ -122,9 +156,9 @@
           {{#each kitItems}}<div class="opt fixed">{{this}}</div>{{/each}}
           <div class="opt fixed cash">${{cash}}</div></div>
         <div class="col"><h4 class="legend small"><span>{{localize "NOIR.Choice"}}</span></h4>
-          {{#each choiceA}}<a class="opt {{#if on}}on{{/if}}" data-action="chip" data-field="choiceA" data-value="{{id}}">{{name}}</a>{{/each}}</div>
+          {{#each choiceA}}<a class="opt {{#if on}}on{{/if}}" data-action="chip" data-field="choiceA" data-value="{{id}}"><img class="pic xs" src="{{img}}" alt="">{{name}}</a>{{/each}}</div>
         <div class="col"><h4 class="legend small"><span>{{localize "NOIR.Choice"}}</span></h4>
-          {{#each choiceB}}<a class="opt {{#if on}}on{{/if}}" data-action="chip" data-field="choiceB" data-value="{{id}}">{{name}}</a>{{/each}}</div>
+          {{#each choiceB}}<a class="opt {{#if on}}on{{/if}}" data-action="chip" data-field="choiceB" data-value="{{id}}"><img class="pic xs" src="{{img}}" alt="">{{name}}</a>{{/each}}</div>
       </div>
     {{/if}}
 

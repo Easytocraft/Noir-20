@@ -54,16 +54,17 @@ export class NoirActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
     ctx.canAdvance = lvl === 0 || (lvl < NOIR.maxLevel && sys.details.xp >= need);
     ctx.vices = NOIR.vices; ctx.drives = NOIR.drives;
 
-    ctx.origin = ["species", "class", "subclass", "background"].flatMap(t => by(t).map(i => ({ id: i.id, name: i.name, type: L(`TYPES.Item.${t}`) })));
-    ctx.traits = await Promise.all(["species", "background"].flatMap(t => by(t)).map(async i => ({ id: i.id, name: i.name, type: L(`TYPES.Item.${i.type}`), desc: await enrich(i.system.description) })));
+    ctx.origin = ["species", "class", "background"].flatMap(t => by(t).map(i => ({ id: i.id, name: i.name, img: i.img, type: L(`TYPES.Item.${t}`) })));
+    ctx.traits = await Promise.all(["species", "background"].flatMap(t => by(t)).map(async i => ({ id: i.id, name: i.name, img: i.img, type: L(`TYPES.Item.${i.type}`), desc: await enrich(i.system.description) })));
 
-    const groups = new Map();
-    for (const f of by("feature").sort((a, b) => a.system.level - b.system.level)) {
-      const g = f.system.source || L("NOIR.Other");
-      if (!groups.has(g)) groups.set(g, []);
-      groups.get(g).push({ id: f.id, name: f.name, level: f.system.level, cost: f.system.cost, desc: await enrich(f.system.description) });
-    }
-    ctx.featureGroups = [...groups].map(([name, list]) => ({ name, list }));
+    const KINDS = ["trait", "ability", "racial", "origin", "talent"];
+    const feats = by("feature");
+    ctx.featureGroups = await Promise.all(KINDS.map(async kind => ({
+      name: L(`NOIR.Kind.${kind}`),
+      list: await Promise.all(feats.filter(f => (f.system.kind ?? "ability") === kind).map(async f => ({
+        id: f.id, name: f.name, img: f.img, source: f.system.source, cost: f.system.cost, desc: await enrich(f.system.description) })))
+    })));
+    ctx.featureGroups = ctx.featureGroups.filter(g => g.list.length);
     ctx.weapons = by("weapon"); ctx.armor = by("armor"); ctx.gear = by("gear");
     ctx.bio = await enrich(sys.biography); ctx.notes = await enrich(sys.notes);
     return ctx;
@@ -72,7 +73,7 @@ export class NoirActorSheet extends HandlebarsApplicationMixin(ActorSheetV2) {
   /** Раса, происхождение, класс и подкласс применяются автоматически. */
   async _onDropItem(event, item) {
     if (!this.document.isOwner) return;
-    if (["species", "background", "class", "subclass"].includes(item.type) && item.parent !== this.document) return applyOrigin(this.document, item);
+    if (["species", "background", "class"].includes(item.type) && item.parent !== this.document) return applyOrigin(this.document, item);
     return super._onDropItem(event, item);
   }
 

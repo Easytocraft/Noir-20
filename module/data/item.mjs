@@ -3,6 +3,7 @@ const f = foundry.data.fields;
 const num = (initial = 0, extra = {}) => new f.NumberField({ required: true, integer: true, initial, ...extra });
 const money = () => new f.NumberField({ required: true, initial: 0, min: 0 });
 const desc = () => ({ description: new f.HTMLField() });
+const mods = () => new f.SchemaField({ evasion: num(0), wounds: num(0), stress: num(0), threshold: num(0) });
 const six = () => new f.SchemaField(Object.fromEntries(Object.keys(NOIR.abilities).map(k => [k, num(0)])));
 
 export class WeaponData extends foundry.abstract.TypeDataModel {
@@ -43,21 +44,13 @@ export class GearData extends foundry.abstract.TypeDataModel {
 
 export class ClassData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
-    return { ...desc(), focus: new f.StringField({ initial: "" }), stats: six(), startItems: new f.ArrayField(new f.StringField()) };
+    return { ...desc(), focus: new f.StringField({ initial: "" }), stats: six(), startItems: new f.ArrayField(new f.StringField()), mods: mods() };
   }
 }
 
 export class SpeciesData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
-    return {
-      ...desc(),
-      asi: new f.StringField({ initial: "" }),
-      size: new f.StringField({ initial: "Средний" }),
-      bonuses: six(),
-      freeAsi: num(0, { min: 0 }),
-      freeFrom: new f.ArrayField(new f.StringField()),
-      evasion: num(0), wounds: num(0), stressBonus: num(0)
-    };
+    return { ...desc(), size: new f.StringField({ initial: "Средний" }) };
   }
 }
 
@@ -72,14 +65,14 @@ export class BackgroundData extends foundry.abstract.TypeDataModel {
   }
 }
 
+/** Особенность или способность. kind: trait — особенность класса, ability — способность класса, racial — расовая, origin — происхождения, talent — приём. */
 export class FeatureData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
-    return { ...desc(), level: num(1, { min: 0, max: 20 }), source: new f.StringField({ initial: "" }), cost: new f.StringField({ initial: "" }) };
-  }
-}
-
-export class SubclassData extends foundry.abstract.TypeDataModel {
-  static defineSchema() {
-    return { ...desc(), class: new f.StringField({ initial: "" }) };
+    return {
+      ...desc(),
+      kind: new f.StringField({ initial: "ability", choices: ["trait", "ability", "racial", "origin", "talent"] }),
+      level: num(1, { min: 0, max: 20 }), source: new f.StringField({ initial: "" }), cost: new f.StringField({ initial: "" }),
+      mods: mods()
+    };
   }
 }

@@ -17,6 +17,7 @@ export const NOIR = {
   statArray: [2, 1, 1, 0, 0, -1],
   statMin: -3, statMax: 5, maxLevel: 10,
   weaponAbilities: { str: "NOIR.Ability.str", dex: "NOIR.Ability.dex", finesse: "NOIR.Finesse" },
+  featureKinds: { trait: "NOIR.Kind.trait", ability: "NOIR.Kind.ability", racial: "NOIR.Kind.racial", origin: "NOIR.Kind.origin", talent: "NOIR.Kind.talent" },
   armorKinds: { armor: "NOIR.Armor", shield: "NOIR.Shield" },
   starter: {
     armorMax: 25, weaponMax: 40,

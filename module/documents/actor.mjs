@@ -9,6 +9,8 @@ export class NoirActor extends Actor {
     for (const a of Object.values(s.abilities)) a.mod = a.value;
     const { con, dex, luck } = Object.fromEntries(Object.entries(s.abilities).map(([k, a]) => [k, a.value]));
 
+    const mods = { evasion: 0, wounds: 0, stress: 0, threshold: 0 };
+    for (const it of this.items) { const m = it.system.mods; if (m) for (const k of Object.keys(mods)) mods[k] += m[k] ?? 0; }
     const worn = this.items.filter(i => i.type === "armor" && i.system.equipped);
     const protection = worn.reduce((n, i) => n + i.system.protection, 0);
     const evasionMod = worn.reduce((n, i) => n + i.system.evasion, 0);
@@ -18,12 +20,12 @@ export class NoirActor extends Actor {
       s.thresholds = { minor: s.foe.minor, medium: s.foe.medium };
       s.wounds.max = s.foe.wounds;
     } else {
-      s.evasion = 10 + dex + evasionMod + s.evasionBonus;
-      const minor = 4 + Math.max(0, con) + protection;
+      s.evasion = 10 + dex + evasionMod + s.evasionBonus + mods.evasion;
+      const minor = 4 + Math.max(0, con) + protection + mods.threshold;
       s.thresholds = { minor, medium: minor + 5 };
-      s.wounds.max = Math.max(3, 6 + con + Math.floor(lvl / 3) + s.woundsBonus);
+      s.wounds.max = Math.max(3, 6 + con + Math.floor(lvl / 3) + s.woundsBonus + mods.wounds);
     }
-    s.stress.max = Math.max(3, 6 + luck + s.stressBonus);
+    s.stress.max = Math.max(3, 6 + luck + s.stressBonus + mods.stress);
     s.breakdown = s.stress.value >= s.stress.max;
   }
 

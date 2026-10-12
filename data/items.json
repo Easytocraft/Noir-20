@@ -15,7 +15,8 @@
    "weight": 0.5,
    "price": 2,
    "description": "<p>Кулак, который помнят.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/weapons/kastet.svg"
  },
  {
   "name": "Финка",
@@ -33,7 +34,8 @@
    "weight": 0.5,
    "price": 3,
    "description": "<p>Узкий нож для узких переулков.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/weapons/finka.svg"
  },
  {
   "name": "Бритва",
@@ -51,7 +53,8 @@
    "weight": 0.2,
    "price": 2,
    "description": "<p>Аккуратная работа.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/weapons/britva.svg"
  },
  {
   "name": "Дубинка",
@@ -69,7 +72,8 @@
    "weight": 1,
    "price": 2,
    "description": "<p>Полицейский аргумент.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/weapons/dubinka.svg"
  },
  {
   "name": "Бейсбольная бита",
@@ -87,7 +91,8 @@
    "weight": 1.5,
    "price": 3,
    "description": "<p>Только по мячу, конечно.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/weapons/beysbolnaya-bita.svg"
  },
  {
   "name": "Трость со шпагой",
@@ -105,7 +110,8 @@
    "weight": 1,
    "price": 15,
    "description": "<p>Элегантность со стальным сердцем.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/weapons/trost-so-shpagoy.svg"
  },
  {
   "name": "Револьвер .38",
@@ -123,7 +129,8 @@
    "weight": 1,
    "price": 25,
    "description": "<p>Рабочая лошадка сыщиков и полисменов.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/weapons/revolver-38.svg"
  },
  {
   "name": "Дерринджер",
@@ -141,7 +148,8 @@
    "weight": 0.3,
    "price": 12,
    "description": "<p>Карманная защита.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/weapons/derrindzher.svg"
  },
  {
   "name": "Автоматический пистолет .45",
@@ -159,7 +167,8 @@
    "weight": 1.2,
    "price": 35,
    "description": "<p>Тяжёлый и громкий.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/weapons/avtomaticheskiy-pistolet-45.svg"
  },
  {
   "name": "Обрез",
@@ -177,7 +186,8 @@
    "weight": 2,
    "price": 30,
    "description": "<p>Вежливо, но убедительно.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/weapons/obrez.svg"
  },
  {
   "name": "Охотничья винтовка",
@@ -195,7 +205,8 @@
    "weight": 3.5,
    "price": 40,
    "description": "<p>Для тех, кто любит дистанцию.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/weapons/ohotnichya-vintovka.svg"
  },
  {
   "name": "Пистолет-пулемёт «Томми»",
@@ -213,7 +224,8 @@
    "weight": 5,
    "price": 120,
    "description": "<p>Рэкетирский аргумент.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/weapons/pistolet-pulemet-tommi.svg"
  },
  {
   "name": "Кожаный плащ",
@@ -225,7 +237,8 @@
    "description": "<p>Лёгкая защита: пороги урона +1.</p>",
    "protection": 1,
    "evasion": 0
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/armor/kozhanyy-plasch.svg"
  },
  {
   "name": "Тренч с подкладкой",
@@ -237,7 +250,8 @@
    "description": "<p>Подбит стальной сеткой: пороги урона +2.</p>",
    "protection": 2,
    "evasion": 0
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/armor/trench-s-podkladkoy.svg"
  },
  {
   "name": "Бронежилет «Стальная сорочка»",
@@ -249,7 +263,8 @@
    "description": "<p>Пороги урона +3, Уклонение −1.</p>",
    "protection": 3,
    "evasion": -1
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/armor/bronezhilet-stalnaya-sorochka.svg"
  },
  {
   "name": "Тяжёлый полицейский жилет",
@@ -261,7 +276,8 @@
    "description": "<p>Пороги урона +5, Уклонение −2.</p>",
    "protection": 5,
    "evasion": -2
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/armor/tyazhelyy-policeyskiy-zhilet.svg"
  },
  {
   "name": "Стальной портфель",
@@ -273,7 +289,8 @@
    "description": "<p>Щит: Уклонение +1.</p>",
    "protection": 0,
    "evasion": 1
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/armor/stalnoy-portfel.svg"
  },
  {
   "name": "Отмычки",
@@ -283,7 +300,8 @@
    "weight": 0.2,
    "price": 5,
    "description": "<p>Воровской инструмент.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/gear/otmychki.svg"
  },
  {
   "name": "Фотоаппарат «Лейка»",
@@ -293,7 +311,8 @@
    "weight": 1,
    "price": 30,
    "description": "<p>Вспышка, плёнка на 24 кадра.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/gear/fotoapparat-leyka.svg"
  },
  {
   "name": "Бутылка виски",
@@ -303,7 +322,8 @@
    "weight": 1,
    "price": 3,
    "description": "<p>Глоток: снимите 1d4 Стресса, но следующая проверка Интеллекта с помехой.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/gear/butylka-viski.svg"
  },
  {
   "name": "Пачка сигарет",
@@ -313,7 +333,8 @@
    "weight": 0.1,
    "price": 1,
    "description": "<p>Затяжка: снимите 1 Стресс (раз в сцену).</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/gear/pachka-sigaret.svg"
  },
  {
   "name": "Аптечка (бинты и йод)",
@@ -323,7 +344,8 @@
    "weight": 1,
    "price": 10,
    "description": "<p>3 порции. Одна порция снимает 1 рану (действие).</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/gear/aptechka-binty-i-yod.svg"
  },
  {
   "name": "Фонарик",
@@ -333,7 +355,8 @@
    "weight": 0.5,
    "price": 3,
    "description": "<p>Свет 9 м.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/gear/fonarik.svg"
  },
  {
   "name": "Блокнот и карандаш",
@@ -343,7 +366,8 @@
    "weight": 0.2,
    "price": 1,
    "description": "<p>Для улик.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/gear/bloknot-i-karandash.svg"
  },
  {
   "name": "Наручники",
@@ -353,7 +377,8 @@
    "weight": 0.5,
    "price": 4,
    "description": "<p>Заковывают существо Среднего размера.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/gear/naruchniki.svg"
  },
  {
   "name": "Проволочный диктофон",
@@ -363,7 +388,8 @@
    "weight": 2,
    "price": 40,
    "description": "<p>Записывает до 30 минут.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/gear/provolochnyy-diktofon.svg"
  },
  {
   "name": "Фальшивые документы",
@@ -373,7 +399,8 @@
    "weight": 0,
    "price": 20,
    "description": "<p>Проверка Харизмы при проверке документов — с преимуществом (один раз).</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/gear/falshivye-dokumenty.svg"
  },
  {
   "name": "Монтировка",
@@ -383,7 +410,8 @@
    "weight": 2,
    "price": 3,
    "description": "<p>Преимущество на Силу для вскрытия.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/gear/montirovka.svg"
  },
  {
   "name": "Бинокль",
@@ -393,7 +421,8 @@
    "weight": 1,
    "price": 15,
    "description": "<p>Видите вдвое дальше.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/gear/binokl.svg"
  },
  {
   "name": "Коробка патронов",
@@ -403,6 +432,73 @@
    "weight": 1,
    "price": 5,
    "description": "<p>12 патронов; используйте на перезарядку.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/gear/korobka-patronov.svg"
+ },
+ {
+  "name": "Колода карт",
+  "type": "gear",
+  "system": {
+   "quantity": 1,
+   "weight": 0.1,
+   "price": 2,
+   "description": "<p>Потёртая колода: для игры, фокусов и гаданий.</p>"
+  },
+  "img": "systems/noir-d20/assets/icons/gear/koloda-kart.svg"
+ },
+ {
+  "name": "Ритуальный набор",
+  "type": "gear",
+  "system": {
+   "quantity": 1,
+   "weight": 1,
+   "price": 15,
+   "description": "<p>Свечи, мел, соль и костяной нож. Нужен для кругов и ритуалов оккультиста.</p>"
+  },
+  "img": "systems/noir-d20/assets/icons/gear/ritualnyy-nabor.svg"
+ },
+ {
+  "name": "Оберег",
+  "type": "gear",
+  "system": {
+   "quantity": 1,
+   "weight": 0.1,
+   "price": 8,
+   "description": "<p>Талисман от сглаза. Хозяин носит его под рубашкой.</p>"
+  },
+  "img": "systems/noir-d20/assets/icons/gear/obereg.svg"
+ },
+ {
+  "name": "Врачебный саквояж",
+  "type": "gear",
+  "system": {
+   "quantity": 1,
+   "weight": 3,
+   "price": 25,
+   "description": "<p>10 порций бинтов, йода и инструментов. Нужен лекарю для лечения.</p>"
+  },
+  "img": "systems/noir-d20/assets/icons/gear/vrachebnyy-sakvoyazh.svg"
+ },
+ {
+  "name": "Динамитная шашка",
+  "type": "gear",
+  "system": {
+   "quantity": 2,
+   "weight": 0.5,
+   "price": 6,
+   "description": "<p>Бросок на 9 м: все в 3 м получают урон по ступени «средний» (проверка Ловкости, сложность 12, снижает ступень).</p>"
+  },
+  "img": "systems/noir-d20/assets/icons/gear/dinamitnaya-shashka.svg"
+ },
+ {
+  "name": "Карта и компас",
+  "type": "gear",
+  "system": {
+   "quantity": 1,
+   "weight": 0.3,
+   "price": 10,
+   "description": "<p>Подробная карта города и окрестностей и латунный компас.</p>"
+  },
+  "img": "systems/noir-d20/assets/icons/gear/karta-i-kompas.svg"
  }
 ]

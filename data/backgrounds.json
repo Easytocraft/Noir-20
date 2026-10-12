@@ -1,93 +1,175 @@
 [
  {
-  "name": "Бывший коп",
+  "name": "Правопорядок",
   "system": {
-   "equipment": "Старый револьвер, потёртый жетон, плащ, 15 баксов",
-   "description": "<p>Вас вышвырнули из участка — или вы сами ушли. Сослуживцы помнят.</p><p><strong>Значок в кармане.</strong> Бывшие коллеги отвечают на 1 вопрос о деле без допросов.</p>",
+   "description": "<p>Участок, жетон, ночные смены. Вы служили закону — или то, что за ним стояло.</p>",
    "startItems": [
-    "Револьвер .38",
-    "Наручники"
+    "Наручники",
+    "Револьвер .38"
    ],
-   "startCash": 15
-  }
+   "startCash": 15,
+   "equipment": ""
+  },
+  "trait": {
+   "name": "Значок в кармане",
+   "desc": "Бывшие или действующие коллеги отвечают на один вопрос о деле, а раз за сессию вы можете сослаться на полицию.",
+   "img": "systems/noir-d20/assets/icons/features/pravoporyadok-znachok-v-karmane.svg"
+  },
+  "img": "systems/noir-d20/assets/icons/backgrounds/pravoporyadok.svg"
  },
  {
-  "name": "Газетчик",
+  "name": "Трущобы",
   "system": {
-   "equipment": "Блокнот, пресс-карта, фотоаппарат, 10 баксов",
-   "description": "<p>Вы ловите сенсации на лету и пишете их до рассвета.</p><p><strong>Пресс-карта.</strong> Вас пускают туда, куда обычно не пускают; можно один раз за сессию «пробить» любой слух через редакцию.</p>",
-   "startItems": [
-    "Фотоаппарат «Лейка»",
-    "Блокнот и карандаш"
-   ],
-   "startCash": 10
-  }
- },
- {
-  "name": "Докер",
-  "system": {
-   "equipment": "Крюк, рабочий комбинезон, фляга, 5 баксов",
-   "description": "<p>Порт выкормил вас и сломал вам спину. Но у вас есть друзья.</p><p><strong>Портовая братва.</strong> В порту вы всегда найдёте ночлег и пару крепких рук.</p>",
-   "startItems": [
-    "Монтировка"
-   ],
-   "startCash": 5
-  }
- },
- {
-  "name": "Певичка",
-  "system": {
-   "equipment": "Вечернее платье, веер, дерринджер, 20 баксов",
-   "description": "<p>Сцена кабаре — ваша вторая кожа. Публика вас любит, администраторы — боятся.</p><p><strong>Тёплый приём.</strong> В клубах и барах вас кормят, поят и слушают, если вы не сорвёте вечер.</p>",
-   "startItems": [
-    "Дерринджер"
-   ],
-   "startCash": 20
-  }
- },
- {
-  "name": "Бутлегер",
-  "system": {
-   "equipment": "Две бутылки самогона, ключи от грузовика, 25 баксов",
-   "description": "<p>Сухой закон — и вы богаты. Или были. Теперь вы просто должны.</p><p><strong>Свои подвалы.</strong> Вы знаете, где спрятать груз или человека на одну ночь.</p>",
-   "startItems": [
-    "Бутылка виски"
-   ],
-   "startCash": 25
-  }
- },
- {
-  "name": "Беспризорник",
-  "system": {
-   "equipment": "Нож, кепка, фальшивые документы, 3 бакса",
-   "description": "<p>Приют, подворотни, крыши. Город — ваш дом.</p><p><strong>Крыши и подворотни.</strong> Вы знаете скрытые пути по городу; можно срезать путь, не совершая проверок, если погони нет.</p>",
-   "startItems": [
-    "Финка",
-    "Фальшивые документы"
-   ],
-   "startCash": 3
-  }
- },
- {
-  "name": "Фронтовик",
-  "system": {
-   "equipment": "Шинель, фляга, старый нож, 10 баксов",
-   "description": "<p>Война закончилась, но не для вас.</p><p><strong>Ветеранский круг.</strong> Другие ветераны всегда помогут вам: ночлег, еда, перевязка.</p>",
+   "description": "<p>Вы выросли среди ржавых лестниц, бельевых верёвок и чужих долгов. Город для вас — сеть щелей.</p>",
    "startItems": [
     "Финка"
    ],
-   "startCash": 10
-  }
+   "startCash": 3,
+   "equipment": ""
+  },
+  "trait": {
+   "name": "Свои в подворотнях",
+   "desc": "Вы знаете скрытые пути и укрытия; в бедных районах вам всегда найдут ночлег и слухи.",
+   "img": "systems/noir-d20/assets/icons/features/truschoby-svoi-v-podvorotnyah.svg"
+  },
+  "img": "systems/noir-d20/assets/icons/backgrounds/truschoby.svg"
  },
  {
-  "name": "Адвокат-неудачник",
+  "name": "Богема",
   "system": {
-   "equipment": "Портфель, бланки, костюм, 20 баксов",
-   "description": "<p>Диплом есть, клиентов нет, зато нужные люди есть везде.</p><p><strong>Знание процедур.</strong> Раз за сессию вы можете оттянуть арест или допрос на сутки, сославшись на закон.</p>",
+   "description": "<p>Клубы, галереи, джаз до утра. Вас знают по именам и по долгам.</p>",
    "startItems": [
+    "Бутылка виски"
+   ],
+   "startCash": 20,
+   "equipment": ""
+  },
+  "trait": {
+   "name": "Нужные знакомства",
+   "desc": "Вы вхожи в клубы, салоны и галереи: туда, куда не пускают обычных людей, вы проходите без проверки.",
+   "img": "systems/noir-d20/assets/icons/features/bogema-nuzhnye-znakomstva.svg"
+  },
+  "img": "systems/noir-d20/assets/icons/backgrounds/bogema.svg"
+ },
+ {
+  "name": "Докарь",
+  "system": {
+   "description": "<p>Порт, краны, ящики и тяжёлые руки. Вы грузили то, о чём не спрашивали.</p>",
+   "startItems": [
+    "Монтировка"
+   ],
+   "startCash": 5,
+   "equipment": ""
+  },
+  "trait": {
+   "name": "Портовая братва",
+   "desc": "В порту вы всегда найдёте ночлег, помощь грузчиков и перевозчика, а тащите вдвое больше обычного.",
+   "img": "systems/noir-d20/assets/icons/features/dokar-portovaya-bratva.svg"
+  },
+  "img": "systems/noir-d20/assets/icons/backgrounds/dokar.svg"
+ },
+ {
+  "name": "Мафиози",
+  "system": {
+   "description": "<p>Семья, уважение, конверты. За вами стоит имя, которое лучше не произносить громко.</p>",
+   "startItems": [
+    "Дерринджер",
     "Фальшивые документы"
    ],
-   "startCash": 20
-  }
+   "startCash": 25,
+   "equipment": ""
+  },
+  "trait": {
+   "name": "Имя семьи",
+   "desc": "Раз за сессию назовите имя семьи: мелкие чины уступают дорогу, крупные вас выслушают (проверка Харизмы с преимуществом).",
+   "img": "systems/noir-d20/assets/icons/features/mafiozi-imya-semi.svg"
+  },
+  "img": "systems/noir-d20/assets/icons/backgrounds/mafiozi.svg"
+ },
+ {
+  "name": "Консилум",
+  "system": {
+   "description": "<p>Тайный совет магов и печатей. Вы видели, как закрывают двери, которые лучше не открывать.</p>",
+   "startItems": [
+    "Ритуальный набор"
+   ],
+   "startCash": 15,
+   "equipment": ""
+  },
+  "trait": {
+   "name": "Печать Консилума",
+   "desc": "Вы распознаёте магию и старые печати по виду, а члены Консилума обязаны вас выслушать.",
+   "img": "systems/noir-d20/assets/icons/features/konsilum-pechat-konsiluma.svg"
+  },
+  "img": "systems/noir-d20/assets/icons/backgrounds/konsilum.svg"
+ },
+ {
+  "name": "Кочевник",
+  "system": {
+   "description": "<p>Кибитки, костры, бесконечные дороги. Дом — там, где остановился.</p>",
+   "startItems": [
+    "Карта и компас"
+   ],
+   "startCash": 5,
+   "equipment": ""
+  },
+  "trait": {
+   "name": "Дорога дома",
+   "desc": "Вы знаете пути между городами и переносите лишения: ночёвка под открытым небом вам не вредит, а попутчики делятся новостями.",
+   "img": "systems/noir-d20/assets/icons/features/kochevnik-doroga-doma.svg"
+  },
+  "img": "systems/noir-d20/assets/icons/backgrounds/kochevnik.svg"
+ },
+ {
+  "name": "Армейский солдат",
+  "system": {
+   "description": "<p>Выживший в Великой войне: окопы, колючая проволока, медаль, которую некому вручить.</p>",
+   "startItems": [
+    "Финка",
+    "Аптечка (бинты и йод)"
+   ],
+   "startCash": 10,
+   "equipment": ""
+  },
+  "trait": {
+   "name": "Ветеранский круг",
+   "desc": "Другие ветераны всегда помогут: ночлег, еда, перевязка. Против испуга вы действуете с преимуществом.",
+   "img": "systems/noir-d20/assets/icons/features/armeyskiy-soldat-veteranskiy-krug.svg"
+  },
+  "img": "systems/noir-d20/assets/icons/backgrounds/armeyskiy-soldat.svg"
+ },
+ {
+  "name": "Шабаш",
+  "system": {
+   "description": "<p>Лунные ночи, котёл и круг сестёр. Вас учили тому, о чём не пишут в книгах.</p>",
+   "startItems": [
+    "Оберег"
+   ],
+   "startCash": 10,
+   "equipment": ""
+  },
+  "trait": {
+   "name": "Ночные сёстры",
+   "desc": "Круг ведьм даст вам ночлег, зелье (снимает 1 Стресс) и слух о потустороннем.",
+   "img": "systems/noir-d20/assets/icons/features/shabash-nochnye-sestry.svg"
+  },
+  "img": "systems/noir-d20/assets/icons/backgrounds/shabash.svg"
+ },
+ {
+  "name": "Шпана",
+  "system": {
+   "description": "<p>Кепка, рогатка, быстрые ноги. Вы росли на крышах и знали, где ночует полиция.</p>",
+   "startItems": [
+    "Отмычки"
+   ],
+   "startCash": 3,
+   "equipment": ""
+  },
+  "trait": {
+   "name": "Крыши и подворотни",
+   "desc": "Вы срезаете путь по городу без проверок, а карманные кражи у вас идут с преимуществом.",
+   "img": "systems/noir-d20/assets/icons/features/shpana-kryshi-i-podvorotni.svg"
+  },
+  "img": "systems/noir-d20/assets/icons/backgrounds/shpana.svg"
  }
 ]

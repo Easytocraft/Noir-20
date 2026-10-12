@@ -4,7 +4,7 @@
   <div class="rows">
     {{#each rows}}
     <a class="row" data-action="choose" data-id="{{id}}" data-name="{{lname}}">
-      <span class="c-name"><i class="glyph g-{{glyph}}"></i>{{name}}</span>{{#each cols}}<span>{{this}}</span>{{/each}}
+      <span class="c-name">{{#if img}}<img class="thumb" src="{{img}}" alt="">{{else}}<i class="glyph g-{{glyph}}"></i>{{/if}}{{name}}</span>{{#each cols}}<span>{{this}}</span>{{/each}}
     </a>
     {{/each}}
   </div>

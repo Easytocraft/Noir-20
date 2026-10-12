@@ -16,7 +16,7 @@
       <label>{{localize "NOIR.MaxAmmo"}} <input type="number" name="system.ammo.max" value="{{system.ammo.max}}"></label>
     {{/if}}
     {{#if is.armor}}
-      <label>{{localize "NOIR.Kind"}} <select name="system.kind">{{selectOptions armorKinds selected=system.kind localize=true}}</select></label>
+      <label>{{localize "NOIR.KindLabel"}} <select name="system.kind">{{selectOptions armorKinds selected=system.kind localize=true}}</select></label>
       <label>{{localize "NOIR.Protection"}} <input type="number" name="system.protection" value="{{system.protection}}"></label>
       <label>{{localize "NOIR.Evasion"}} <input type="number" name="system.evasion" value="{{system.evasion}}"></label>
       <label>{{localize "NOIR.Equipped"}} <input type="checkbox" name="system.equipped" {{checked system.equipped}}></label>
@@ -25,29 +25,28 @@
       <label>{{localize "NOIR.Quantity"}} <input type="number" name="system.quantity" value="{{system.quantity}}"></label>
     {{/if}}
     {{#if is.class}}
-      <label class="nd-wide">{{localize "NOIR.Focus"}} <input type="text" name="system.focus" value="{{system.focus}}"></label>
+      <label class="wide">{{localize "NOIR.Focus"}} <input type="text" name="system.focus" value="{{system.focus}}"></label>
       {{#each abilityList}}<label>{{label}} <input type="number" name="system.stats.{{key}}" value="{{value}}"></label>{{/each}}
+      <label>{{localize "NOIR.Evasion"}} <input type="number" name="system.mods.evasion" value="{{system.mods.evasion}}"></label>
+      <label>{{localize "NOIR.Wounds"}} <input type="number" name="system.mods.wounds" value="{{system.mods.wounds}}"></label>
+      <label>{{localize "NOIR.Stress"}} <input type="number" name="system.mods.stress" value="{{system.mods.stress}}"></label>
+      <label>{{localize "NOIR.Thresholds"}} <input type="number" name="system.mods.threshold" value="{{system.mods.threshold}}"></label>
     {{/if}}
     {{#if is.species}}
-      <label class="nd-wide">{{localize "NOIR.ASI"}} <input type="text" name="system.asi" value="{{system.asi}}"></label>
       <label>{{localize "NOIR.Size"}} <input type="text" name="system.size" value="{{system.size}}"></label>
-      <label>{{localize "NOIR.FreeAsi"}} <input type="number" name="system.freeAsi" value="{{system.freeAsi}}"></label>
-      {{#each abilityList}}<label>{{label}} <input type="number" name="system.bonuses.{{key}}" value="{{bonus}}"></label>{{/each}}
-      <label>{{localize "NOIR.Evasion"}} <input type="number" name="system.evasion" value="{{system.evasion}}"></label>
-      <label>{{localize "NOIR.Wounds"}} <input type="number" name="system.wounds" value="{{system.wounds}}"></label>
-      <label>{{localize "NOIR.StressCap"}} <input type="number" name="system.stressBonus" value="{{system.stressBonus}}"></label>
     {{/if}}
     {{#if is.background}}
-      <label class="nd-wide">{{localize "NOIR.Equipment"}} <input type="text" name="system.equipment" value="{{system.equipment}}"></label>
+      <label class="wide">{{localize "NOIR.Equipment"}} <input type="text" name="system.equipment" value="{{system.equipment}}"></label>
       <label>{{localize "NOIR.StartCash"}} <input type="number" name="system.startCash" value="{{system.startCash}}"></label>
     {{/if}}
-    {{#if is.subclass}}
-      <label class="nd-wide">{{localize "TYPES.Item.class"}} <input type="text" name="system.class" value="{{system.class}}"></label>
-    {{/if}}
     {{#if is.feature}}
-      <label>{{localize "NOIR.Level"}} <input type="number" name="system.level" value="{{system.level}}"></label>
+      <label>{{localize "NOIR.KindLabel"}} <select name="system.kind">{{selectOptions featureKinds selected=system.kind localize=true}}</select></label>
       <label>{{localize "NOIR.Source"}} <input type="text" name="system.source" value="{{system.source}}"></label>
       <label>{{localize "NOIR.Cost"}} <input type="text" name="system.cost" value="{{system.cost}}"></label>
+      <label>{{localize "NOIR.Evasion"}} <input type="number" name="system.mods.evasion" value="{{system.mods.evasion}}"></label>
+      <label>{{localize "NOIR.Wounds"}} <input type="number" name="system.mods.wounds" value="{{system.mods.wounds}}"></label>
+      <label>{{localize "NOIR.Stress"}} <input type="number" name="system.mods.stress" value="{{system.mods.stress}}"></label>
+      <label>{{localize "NOIR.Thresholds"}} <input type="number" name="system.mods.threshold" value="{{system.mods.threshold}}"></label>
     {{/if}}
     {{#if hasPrice}}
       <label>{{localize "NOIR.Weight"}} <input type="number" step="0.1" name="system.weight" value="{{system.weight}}"></label>

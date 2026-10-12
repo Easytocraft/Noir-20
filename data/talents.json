@@ -7,7 +7,8 @@
    "source": "Приём",
    "cost": "",
    "description": "<p>Вы с преимуществом переносите яд и выпивку. Порок «Выпивка» не требует баксов.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/talents/zheleznaya-pechen.svg"
  },
  {
   "name": "Свой в полиции",
@@ -17,7 +18,8 @@
    "source": "Приём",
    "cost": "",
    "description": "<p>Раз за сессию узнайте о ходе полицейского дела без проверки.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/talents/svoy-v-policii.svg"
  },
  {
   "name": "Мастер допроса",
@@ -27,7 +29,8 @@
    "source": "Приём",
    "cost": "",
    "description": "<p>Проверки Харизмы и Интеллекта во время допроса вы совершаете с преимуществом.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/talents/master-doprosa.svg"
  },
  {
   "name": "Быстрая рука",
@@ -37,7 +40,8 @@
    "source": "Приём",
    "cost": "",
    "description": "<p>+2 к инициативе; достать оружие можно бесплатно.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/talents/bystraya-ruka.svg"
  },
  {
   "name": "Дальний прицел",
@@ -47,7 +51,8 @@
    "source": "Приём",
    "cost": "",
    "description": "<p>Дальность огнестрельного оружия удваивается; помеха на дальней дистанции не применяется.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/talents/dalniy-pricel.svg"
  },
  {
   "name": "Меткий стрелок",
@@ -57,7 +62,8 @@
    "source": "Приём",
    "cost": "",
    "description": "<p>Вы игнорируете укрытие, дающее +2 к Уклонению.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/talents/metkiy-strelok.svg"
  },
  {
   "name": "Рукопашник",
@@ -67,7 +73,8 @@
    "source": "Приём",
    "cost": "",
    "description": "<p>Безоружные удары наносят 1d6; захват совершается бонусным действием.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/talents/rukopashnik.svg"
  },
  {
   "name": "Двуствольщик",
@@ -77,7 +84,8 @@
    "source": "Приём",
    "cost": "",
    "description": "<p>Можно драться двумя одноручными пистолетами: бонусная атака без бонуса характеристики к урону.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/talents/dvustvolschik.svg"
  },
  {
   "name": "Грязный бой",
@@ -87,7 +95,8 @@
    "source": "Приём",
    "cost": "",
    "description": "<p>Раз за ход после попадания оттолкните цель на 3 м или повалите её.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/talents/gryaznyy-boy.svg"
  },
  {
   "name": "Крепкий орешек",
@@ -97,7 +106,8 @@
    "source": "Приём",
    "cost": "",
    "description": "<p>Максимум ран +1.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/talents/krepkiy-oreshek.svg"
  },
  {
   "name": "Выдержка",
@@ -107,7 +117,8 @@
    "source": "Приём",
    "cost": "",
    "description": "<p>Запас Стресса +2.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/talents/vyderzhka.svg"
  },
  {
   "name": "Хладнокровие",
@@ -117,7 +128,8 @@
    "source": "Приём",
    "cost": "",
    "description": "<p>Раз за сцену перебросьте проверку против испуга.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/talents/hladnokrovie.svg"
  },
  {
   "name": "Тихая смерть",
@@ -127,7 +139,8 @@
    "source": "Приём",
    "cost": "",
    "description": "<p>Первое попадание по цели, не заметившей вас, считается критическим.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/talents/tihaya-smert.svg"
  },
  {
   "name": "Тень в переулке",
@@ -137,7 +150,8 @@
    "source": "Приём",
    "cost": "",
    "description": "<p>Проверки Ловкости, чтобы скрыться или прокрасться в городе, вы совершаете с преимуществом.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/talents/ten-v-pereulke.svg"
  },
  {
   "name": "Фальшивая улыбка",
@@ -147,7 +161,8 @@
    "source": "Приём",
    "cost": "",
    "description": "<p>Проверки Харизмы при первой встрече с существом вы совершаете с преимуществом.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/talents/falshivaya-ulybka.svg"
  },
  {
   "name": "Широкий круг",
@@ -157,7 +172,8 @@
    "source": "Приём",
    "cost": "",
    "description": "<p>Назовите трёх новых контактов; раз за сессию «позвоните другу».</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/talents/shirokiy-krug.svg"
  },
  {
   "name": "Полиглот улиц",
@@ -167,7 +183,8 @@
    "source": "Приём",
    "cost": "",
    "description": "<p>Вы знаете любой район: раз за сцену мастер называет вам адрес, имя или слух, которые вам нужны.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/talents/poliglot-ulic.svg"
  },
  {
   "name": "Механик-самоучка",
@@ -177,7 +194,8 @@
    "source": "Приём",
    "cost": "",
    "description": "<p>Вы чините и мастерите предметы за минуту; проверки Интеллекта по механике вы совершаете с преимуществом.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/talents/mehanik-samouchka.svg"
  },
  {
   "name": "Мастер маскировки",
@@ -187,7 +205,8 @@
    "source": "Приём",
    "cost": "",
    "description": "<p>Преображаетесь за 10 минут: проверки Харизмы, поддерживающие личину, вы совершаете с преимуществом.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/talents/master-maskirovki.svg"
  },
  {
   "name": "Сердце на рукаве",
@@ -197,7 +216,8 @@
    "source": "Приём",
    "cost": "",
    "description": "<p>Раз за сессию перебросьте проваленную проверку Харизмы.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/talents/serdce-na-rukave.svg"
  },
  {
   "name": "Шестое чувство",
@@ -207,7 +227,8 @@
    "source": "Приём",
    "cost": "",
    "description": "<p>Вас нельзя застать врасплох; раз за сессию мастер предупреждает вас об опасности.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/talents/shestoe-chuvstvo.svg"
  },
  {
   "name": "Мёртвая хватка",
@@ -217,7 +238,8 @@
    "source": "Приём",
    "cost": "",
    "description": "<p>Проверки Силы при преследовании и захвате вы совершаете с преимуществом.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/talents/mertvaya-hvatka.svg"
  },
  {
   "name": "Алиби",
@@ -227,7 +249,8 @@
    "source": "Приём",
    "cost": "",
    "description": "<p>Раз за сессию заявите, что были в другом месте: стража верит без проверки.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/talents/alibi.svg"
  },
  {
   "name": "Стреляный воробей",
@@ -237,6 +260,7 @@
    "source": "Приём",
    "cost": "",
    "description": "<p>+1 к Уклонению против дальних атак; можно перебросить инициативу.</p>"
-  }
+  },
+  "img": "systems/noir-d20/assets/icons/talents/strelyanyy-vorobey.svg"
  }
 ]

@@ -2,190 +2,481 @@
  {
   "name": "Человек",
   "system": {
-   "asi": "+1 к любой характеристике",
    "size": "Средний",
-   "bonuses": {
-    "str": 0,
-    "dex": 0,
-    "int": 0,
-    "con": 0,
-    "luck": 0,
-    "cha": 0
+   "description": "<p>Обычные горожане: ничем не примечательны, и в этом их сила. Любой наряд им к лицу, любой шляпа — по размеру.</p>"
+  },
+  "traits": [
+   {
+    "name": "Упорство",
+    "desc": "Раз за сессию перебросьте проваленную проверку.",
+    "mods": {
+     "evasion": 0,
+     "wounds": 0,
+     "stress": 0,
+     "threshold": 0
+    },
+    "img": "systems/noir-d20/assets/icons/features/chelovek-uporstvo.svg"
    },
-   "freeAsi": 1,
-   "freeFrom": [],
-   "evasion": 0,
-   "wounds": 0,
-   "stressBonus": 0,
-   "description": "<p>Самый обычный горожанин — и самый непредсказуемый.</p><p><strong>Упорство.</strong> Раз за сессию перебросьте проваленную проверку.</p><p><strong>Универсал.</strong> Назовите одного дополнительного знакомого — мастер даст ему имя и повод вам помочь.</p>"
-  }
- },
- {
-  "name": "Эльф",
-  "system": {
-   "asi": "+1 Ловкость",
-   "size": "Средний",
-   "bonuses": {
-    "str": 0,
-    "dex": 1,
-    "int": 0,
-    "con": 0,
-    "luck": 0,
-    "cha": 0
-   },
-   "freeAsi": 0,
-   "freeFrom": [],
-   "evasion": 0,
-   "wounds": 0,
-   "stressBonus": 0,
-   "description": "<p>Долгожители, ставшие тенями города: изящные, насмешливые и слишком помнящие.</p><p><strong>Острые чувства.</strong> Проверки Удачи, чтобы заметить деталь или опасность, вы совершаете с преимуществом.</p><p><strong>Лёгкий сон.</strong> Вам хватает четырёх часов отдыха.</p>"
-  }
- },
- {
-  "name": "Дворф",
-  "system": {
-   "asi": "+1 Телосложение",
-   "size": "Средний",
-   "bonuses": {
-    "str": 0,
-    "dex": 0,
-    "int": 0,
-    "con": 1,
-    "luck": 0,
-    "cha": 0
-   },
-   "freeAsi": 0,
-   "freeFrom": [],
-   "evasion": 0,
-   "wounds": 0,
-   "stressBonus": 0,
-   "description": "<p>Коренастые мастера и грузчики, на чьих плечах стоит вся торговля города.</p><p><strong>Закалка.</strong> Вы с преимуществом переносите яд и выпивку.</p><p><strong>Золотые руки.</strong> Проверки Интеллекта по ремеслу и металлу вы совершаете с преимуществом.</p>"
-  }
- },
- {
-  "name": "Гоблин",
-  "system": {
-   "asi": "+1 Интеллект",
-   "size": "Малый",
-   "bonuses": {
-    "str": 0,
-    "dex": 0,
-    "int": 1,
-    "con": 0,
-    "luck": 0,
-    "cha": 0
-   },
-   "freeAsi": 0,
-   "freeFrom": [],
-   "evasion": 0,
-   "wounds": 0,
-   "stressBonus": 0,
-   "description": "<p>Мелкие, хитрые, вечно чем-то недовольные. Гоблин всегда знает, где чинят, крадут и скупают.</p><p><strong>Смекалка выживших.</strong> Проверки Интеллекта при починке, взломе и устройстве ловушек вы совершаете с преимуществом.</p><p><strong>Трусливая хитрость.</strong> Раз за сцену вы можете скрыться из боя без проверки, если рядом есть укрытие.</p>"
-  }
- },
- {
-  "name": "Крысолюд",
-  "system": {
-   "asi": "+1 Удача",
-   "size": "Малый",
-   "bonuses": {
-    "str": 0,
-    "dex": 0,
-    "int": 0,
-    "con": 0,
-    "luck": 1,
-    "cha": 0
-   },
-   "freeAsi": 0,
-   "freeFrom": [],
-   "evasion": 0,
-   "wounds": 0,
-   "stressBonus": 0,
-   "description": "<p>Жители канализации и подвалов. Их презирают — и пользуются их слухами.</p><p><strong>Падальщик.</strong> Вы всегда найдёте еду, ночлег или нужный хлам, если есть хоть одна помойка.</p><p><strong>Крепкий желудок.</strong> Вы не болеете и с преимуществом переносите яд.</p>"
-  }
- },
- {
-  "name": "Котари",
-  "system": {
-   "asi": "+1 Ловкость",
-   "size": "Средний",
-   "bonuses": {
-    "str": 0,
-    "dex": 1,
-    "int": 0,
-    "con": 0,
-    "luck": 0,
-    "cha": 0
-   },
-   "freeAsi": 0,
-   "freeFrom": [],
-   "evasion": 0,
-   "wounds": 0,
-   "stressBonus": 0,
-   "description": "<p>Кошачий народ: независимые, любопытные, неприкосновенные в своих кварталах.</p><p><strong>Кошачья грация.</strong> Падение с высоты не наносит вам урона.</p><p><strong>Девять жизней.</strong> Раз за сессию понизьте полученный урон на одну ступень (тяжёлый — до среднего).</p>"
-  }
+   {
+    "name": "Универсал",
+    "desc": "Назовите одного дополнительного знакомого: мастер даст ему имя и повод вам помочь.",
+    "mods": {
+     "evasion": 0,
+     "wounds": 0,
+     "stress": 0,
+     "threshold": 0
+    },
+    "img": "systems/noir-d20/assets/icons/features/chelovek-universal.svg"
+   }
+  ],
+  "img": "systems/noir-d20/assets/icons/species/chelovek.svg"
  },
  {
   "name": "Демон",
   "system": {
-   "asi": "+1 Харизма",
    "size": "Средний",
-   "bonuses": {
-    "str": 0,
-    "dex": 0,
-    "int": 0,
-    "con": 0,
-    "luck": 0,
-    "cha": 1
+   "description": "<p>Потомки адского договора: красноватая кожа, изогнутые рога, горящие глаза и хвост, который прячут под плащом.</p>"
+  },
+  "traits": [
+   {
+    "name": "Адская кровь",
+    "desc": "Урон от огня снижается на одну ступень, и вы не боитесь пламени.",
+    "mods": {
+     "evasion": 0,
+     "wounds": 0,
+     "stress": 0,
+     "threshold": 0
+    },
+    "img": "systems/noir-d20/assets/icons/features/demon-adskaya-krov.svg"
    },
-   "freeAsi": 0,
-   "freeFrom": [],
-   "evasion": 0,
-   "wounds": 0,
-   "stressBonus": 0,
-   "description": "<p>Те, в чьей крови договор, заключённый предками. Рога прячут под шляпой, взгляд — под полями.</p><p><strong>Адская кровь.</strong> Урон от огня снижается на одну ступень.</p><p><strong>Метка.</strong> Раз за сцену добавьте 1d4 к проверке Харизмы при запугивании или соблазне.</p>"
-  }
+   {
+    "name": "Метка",
+    "desc": "Раз за сцену добавьте 1d4 к проверке Харизмы при запугивании или соблазне.",
+    "mods": {
+     "evasion": 0,
+     "wounds": 0,
+     "stress": 0,
+     "threshold": 0
+    },
+    "img": "systems/noir-d20/assets/icons/features/demon-metka.svg"
+   }
+  ],
+  "img": "systems/noir-d20/assets/icons/species/demon.svg"
  },
  {
   "name": "Голиаф",
   "system": {
-   "asi": "+1 Сила; +1 рана; −1 Уклонение",
    "size": "Большой",
-   "bonuses": {
-    "str": 1,
-    "dex": 0,
-    "int": 0,
-    "con": 0,
-    "luck": 0,
-    "cha": 0
+   "description": "<p>Двухметровые великаны с серой, будто каменной кожей, полосатыми татуировками и тяжёлой челюстью.</p>"
+  },
+  "traits": [
+   {
+    "name": "Горный великан",
+    "desc": "Вы поднимаете и тащите вдвое больше, а проверки Силы на подъём и бросок — с преимуществом.",
+    "mods": {
+     "evasion": 0,
+     "wounds": 0,
+     "stress": 0,
+     "threshold": 0
+    },
+    "img": "systems/noir-d20/assets/icons/features/goliaf-gornyy-velikan.svg"
    },
-   "freeAsi": 0,
-   "freeFrom": [],
-   "evasion": -1,
-   "wounds": 1,
-   "stressBonus": 0,
-   "description": "<p>Исполины из горных кланов. В городе им тесно в дверях и в карманах.</p><p><strong>Горный великан.</strong> Вы поднимаете и тащите вдвое больше обычного.</p><p><strong>Крепкая кость.</strong> Одной раной больше, но вас проще достать.</p>"
-  }
+   {
+    "name": "Крепкая кость",
+    "desc": "Одной раной больше, но вас проще достать: Уклонение на 1 ниже.",
+    "mods": {
+     "evasion": -1,
+     "wounds": 1,
+     "stress": 0,
+     "threshold": 0
+    },
+    "img": "systems/noir-d20/assets/icons/features/goliaf-krepkaya-kost.svg"
+   }
+  ],
+  "img": "systems/noir-d20/assets/icons/species/goliaf.svg"
+ },
+ {
+  "name": "Эльф",
+  "system": {
+   "size": "Средний",
+   "description": "<p>Высокие и стройные, с длинными заострёнными ушами, миндалевидными глазами и вечной насмешкой на тонких губах.</p>"
+  },
+  "traits": [
+   {
+    "name": "Острые чувства",
+    "desc": "Проверки Удачи, чтобы заметить деталь или опасность, — с преимуществом.",
+    "mods": {
+     "evasion": 0,
+     "wounds": 0,
+     "stress": 0,
+     "threshold": 0
+    },
+    "img": "systems/noir-d20/assets/icons/features/elf-ostrye-chuvstva.svg"
+   },
+   {
+    "name": "Лёгкий сон",
+    "desc": "Вам хватает четырёх часов отдыха, а магия сна на вас не действует.",
+    "mods": {
+     "evasion": 0,
+     "wounds": 0,
+     "stress": 0,
+     "threshold": 0
+    },
+    "img": "systems/noir-d20/assets/icons/features/elf-legkiy-son.svg"
+   }
+  ],
+  "img": "systems/noir-d20/assets/icons/species/elf.svg"
+ },
+ {
+  "name": "Муррены",
+  "system": {
+   "size": "Средний",
+   "description": "<p>Кошачий народ: мягкая шерсть, острые уши, хвост и вертикальные зрачки, горящие в темноте.</p>"
+  },
+  "traits": [
+   {
+    "name": "Кошачья грация",
+    "desc": "Падение с высоты не наносит вам урона, а проверки Ловкости на равновесие — с преимуществом.",
+    "mods": {
+     "evasion": 0,
+     "wounds": 0,
+     "stress": 0,
+     "threshold": 0
+    },
+    "img": "systems/noir-d20/assets/icons/features/murreny-koshachya-graciya.svg"
+   },
+   {
+    "name": "Девять жизней",
+    "desc": "Раз за сессию понизьте полученный урон на одну ступень.",
+    "mods": {
+     "evasion": 0,
+     "wounds": 0,
+     "stress": 0,
+     "threshold": 0
+    },
+    "img": "systems/noir-d20/assets/icons/features/murreny-devyat-zhizney.svg"
+   }
+  ],
+  "img": "systems/noir-d20/assets/icons/species/murreny.svg"
+ },
+ {
+  "name": "Раттены",
+  "system": {
+   "size": "Малый",
+   "description": "<p>Мышиный народ: небольшие, с огромными круглыми ушами, розовыми носами, длинными усами и цепким хвостом.</p>"
+  },
+  "traits": [
+   {
+    "name": "Падальщик",
+    "desc": "Вы всегда найдёте еду, ночлег или нужный хлам, если поблизости есть хоть одна помойка.",
+    "mods": {
+     "evasion": 0,
+     "wounds": 0,
+     "stress": 0,
+     "threshold": 0
+    },
+    "img": "systems/noir-d20/assets/icons/features/ratteny-padalschik.svg"
+   },
+   {
+    "name": "Чутьё на опасность",
+    "desc": "В городе вас нельзя застать врасплох; раз за сессию мастер предупреждает вас об опасности.",
+    "mods": {
+     "evasion": 0,
+     "wounds": 0,
+     "stress": 0,
+     "threshold": 0
+    },
+    "img": "systems/noir-d20/assets/icons/features/ratteny-chute-na-opasnost.svg"
+   }
+  ],
+  "img": "systems/noir-d20/assets/icons/species/ratteny.svg"
+ },
+ {
+  "name": "Орк",
+  "system": {
+   "size": "Средний",
+   "description": "<p>Широкоплечие, с зеленоватой кожей, низким лбом и клыками, торчащими из нижней челюсти.</p>"
+  },
+  "traits": [
+   {
+    "name": "Ярость крови",
+    "desc": "Раз за сцену, получив рану, вы немедленно совершаете атаку вне очереди с преимуществом.",
+    "mods": {
+     "evasion": 0,
+     "wounds": 0,
+     "stress": 0,
+     "threshold": 0
+    },
+    "img": "systems/noir-d20/assets/icons/features/ork-yarost-krovi.svg"
+   },
+   {
+    "name": "Звериная выносливость",
+    "desc": "Одной раной больше.",
+    "mods": {
+     "evasion": 0,
+     "wounds": 1,
+     "stress": 0,
+     "threshold": 0
+    },
+    "img": "systems/noir-d20/assets/icons/features/ork-zverinaya-vynoslivost.svg"
+   }
+  ],
+  "img": "systems/noir-d20/assets/icons/species/ork.svg"
+ },
+ {
+  "name": "Дворф",
+  "system": {
+   "size": "Средний",
+   "description": "<p>Коренастые бородачи с широкими плечами, густыми бровями и заплетёнными в косы усами.</p>"
+  },
+  "traits": [
+   {
+    "name": "Закалка",
+    "desc": "Вы с преимуществом переносите яд и выпивку.",
+    "mods": {
+     "evasion": 0,
+     "wounds": 0,
+     "stress": 0,
+     "threshold": 0
+    },
+    "img": "systems/noir-d20/assets/icons/features/dvorf-zakalka.svg"
+   },
+   {
+    "name": "Золотые руки",
+    "desc": "Проверки Интеллекта по ремеслу, металлу и камню — с преимуществом.",
+    "mods": {
+     "evasion": 0,
+     "wounds": 0,
+     "stress": 0,
+     "threshold": 0
+    },
+    "img": "systems/noir-d20/assets/icons/features/dvorf-zolotye-ruki.svg"
+   }
+  ],
+  "img": "systems/noir-d20/assets/icons/species/dvorf.svg"
+ },
+ {
+  "name": "Гоблин",
+  "system": {
+   "size": "Малый",
+   "description": "<p>Мелкие, зеленоватые, с огромными остроконечными ушами, острым носом и хищной ухмылкой.</p>"
+  },
+  "traits": [
+   {
+    "name": "Смекалка выживших",
+    "desc": "Проверки Интеллекта при починке, взломе и устройстве ловушек — с преимуществом.",
+    "mods": {
+     "evasion": 0,
+     "wounds": 0,
+     "stress": 0,
+     "threshold": 0
+    },
+    "img": "systems/noir-d20/assets/icons/features/goblin-smekalka-vyzhivshih.svg"
+   },
+   {
+    "name": "Трусливая хитрость",
+    "desc": "Раз за сцену скройтесь из боя без проверки, если рядом есть укрытие.",
+    "mods": {
+     "evasion": 0,
+     "wounds": 0,
+     "stress": 0,
+     "threshold": 0
+    },
+    "img": "systems/noir-d20/assets/icons/features/goblin-truslivaya-hitrost.svg"
+   }
+  ],
+  "img": "systems/noir-d20/assets/icons/species/goblin.svg"
  },
  {
   "name": "Лилипут",
   "system": {
-   "asi": "+1 Удача; +1 Уклонение",
    "size": "Крошечный",
-   "bonuses": {
-    "str": 0,
-    "dex": 0,
-    "int": 0,
-    "con": 0,
-    "luck": 1,
-    "cha": 0
+   "description": "<p>Крошечные люди ростом с ладонь: для них город — лабиринт, а любая щель — дорога.</p>"
+  },
+  "traits": [
+   {
+    "name": "Малый рост",
+    "desc": "Вы пролезаете в любую щель и с преимуществом прячетесь.",
+    "mods": {
+     "evasion": 0,
+     "wounds": 0,
+     "stress": 0,
+     "threshold": 0
+    },
+    "img": "systems/noir-d20/assets/icons/features/liliput-malyy-rost.svg"
    },
-   "freeAsi": 0,
-   "freeFrom": [],
-   "evasion": 1,
-   "wounds": 0,
-   "stressBonus": 0,
-   "description": "<p>Крошечный народ, которому город кажется огромным лабиринтом, а каждая щель — дорогой.</p><p><strong>Малый рост.</strong> Вы пролезаете в любую щель и с преимуществом прячетесь.</p><p><strong>Не заметили.</strong> Крупные существа часто просто не видят вас — +1 к Уклонению.</p>"
-  }
+   {
+    "name": "Не заметили",
+    "desc": "Крупные существа часто просто не видят вас: Уклонение на 1 выше.",
+    "mods": {
+     "evasion": 1,
+     "wounds": 0,
+     "stress": 0,
+     "threshold": 0
+    },
+    "img": "systems/noir-d20/assets/icons/features/liliput-ne-zametili.svg"
+   }
+  ],
+  "img": "systems/noir-d20/assets/icons/species/liliput.svg"
+ },
+ {
+  "name": "Авианы",
+  "system": {
+   "size": "Средний",
+   "description": "<p>Птицелюды: перья вместо волос, жёлтый клюв, острые глаза и сложенные за спиной крылья.</p>"
+  },
+  "traits": [
+   {
+    "name": "Крылья",
+    "desc": "Вы планируете с высоты и совершаете короткие перелёты (до 9 м), если хватает места; падение не вредит.",
+    "mods": {
+     "evasion": 0,
+     "wounds": 0,
+     "stress": 0,
+     "threshold": 0
+    },
+    "img": "systems/noir-d20/assets/icons/features/aviany-krylya.svg"
+   },
+   {
+    "name": "Птичий глаз",
+    "desc": "Проверки Удачи, чтобы заметить далёкую или мелкую деталь, — с преимуществом.",
+    "mods": {
+     "evasion": 0,
+     "wounds": 0,
+     "stress": 0,
+     "threshold": 0
+    },
+    "img": "systems/noir-d20/assets/icons/features/aviany-ptichiy-glaz.svg"
+   }
+  ],
+  "img": "systems/noir-d20/assets/icons/species/aviany.svg"
+ },
+ {
+  "name": "Гнолл",
+  "system": {
+   "size": "Средний",
+   "description": "<p>Гиеноголовые: пятнистая шерсть, большие круглые уши, мощные челюсти и смех, от которого холодеет спина.</p>"
+  },
+  "traits": [
+   {
+    "name": "Смех гиены",
+    "desc": "Раз за сцену, посмеявшись над врагом, заставьте его совершить следующую проверку с помехой.",
+    "mods": {
+     "evasion": 0,
+     "wounds": 0,
+     "stress": 0,
+     "threshold": 0
+    },
+    "img": "systems/noir-d20/assets/icons/features/gnoll-smeh-gieny.svg"
+   },
+   {
+    "name": "Стайный охотник",
+    "desc": "Ваши атаки по цели, рядом с которой стоит союзник, — с преимуществом.",
+    "mods": {
+     "evasion": 0,
+     "wounds": 0,
+     "stress": 0,
+     "threshold": 0
+    },
+    "img": "systems/noir-d20/assets/icons/features/gnoll-staynyy-ohotnik.svg"
+   }
+  ],
+  "img": "systems/noir-d20/assets/icons/species/gnoll.svg"
+ },
+ {
+  "name": "Тритон",
+  "system": {
+   "size": "Средний",
+   "description": "<p>Водный народ: серебристая чешуя, плавники вместо ушей, жабры на шее и перепонки между пальцами.</p>"
+  },
+  "traits": [
+   {
+    "name": "Дитя глубин",
+    "desc": "Вы дышите под водой и плаваете как рыба; в воде Уклонение на 2 выше.",
+    "mods": {
+     "evasion": 0,
+     "wounds": 0,
+     "stress": 0,
+     "threshold": 0
+    },
+    "img": "systems/noir-d20/assets/icons/features/triton-ditya-glubin.svg"
+   },
+   {
+    "name": "Голос моря",
+    "desc": "Раз за сессию вы чувствуете воду, течение и порт поблизости: мастер даёт подсказку.",
+    "mods": {
+     "evasion": 0,
+     "wounds": 0,
+     "stress": 0,
+     "threshold": 0
+    },
+    "img": "systems/noir-d20/assets/icons/features/triton-golos-morya.svg"
+   }
+  ],
+  "img": "systems/noir-d20/assets/icons/species/triton.svg"
+ },
+ {
+  "name": "Огр",
+  "system": {
+   "size": "Большой",
+   "description": "<p>Огромные, с тяжёлой челюстью, мелкими глазками, толстой шеей и руками, свисающими до колен.</p>"
+  },
+  "traits": [
+   {
+    "name": "Каменный кулак",
+    "desc": "Ваши безоружные удары наносят 1d8 урона.",
+    "mods": {
+     "evasion": 0,
+     "wounds": 0,
+     "stress": 0,
+     "threshold": 0
+    },
+    "img": "systems/noir-d20/assets/icons/features/ogr-kamennyy-kulak.svg"
+   },
+   {
+    "name": "Толстая шкура",
+    "desc": "Пороги урона на 1 выше.",
+    "mods": {
+     "evasion": 0,
+     "wounds": 0,
+     "stress": 0,
+     "threshold": 1
+    },
+    "img": "systems/noir-d20/assets/icons/features/ogr-tolstaya-shkura.svg"
+   }
+  ],
+  "img": "systems/noir-d20/assets/icons/species/ogr.svg"
+ },
+ {
+  "name": "Драконид",
+  "system": {
+   "size": "Средний",
+   "description": "<p>Люди-драконы: чешуя, изогнутые рога, хвост, вертикальные зрачки и пламя в дыхании.</p>"
+  },
+  "traits": [
+   {
+    "name": "Дыхание дракона",
+    "desc": "Раз за сцену выдохните пламя или стужу в конусе 3 м: цели совершают проверку Ловкости (сложность 12) или получают урон по ступени «средний».",
+    "mods": {
+     "evasion": 0,
+     "wounds": 0,
+     "stress": 0,
+     "threshold": 0
+    },
+    "img": "systems/noir-d20/assets/icons/features/drakonid-dyhanie-drakona.svg"
+   },
+   {
+    "name": "Чешуя",
+    "desc": "Пороги урона на 1 выше.",
+    "mods": {
+     "evasion": 0,
+     "wounds": 0,
+     "stress": 0,
+     "threshold": 1
+    },
+    "img": "systems/noir-d20/assets/icons/features/drakonid-cheshuya.svg"
+   }
+  ],
+  "img": "systems/noir-d20/assets/icons/species/drakonid.svg"
  }
 ]

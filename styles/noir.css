@@ -28,7 +28,7 @@
 .noir input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 .noir input:focus, .noir textarea:focus, .noir select:focus { outline: none; border-bottom-color: var(--red); background: rgba(240,232,212,.7); }
 .noir textarea { box-sizing: border-box; border: 1px dotted var(--ink-soft); width: 100%; resize: vertical; background: rgba(240,232,212,.35); }
-.noir button { font-family: var(--type); cursor: pointer; }
+.noir .window-content button { font-family: var(--type); cursor: pointer; }
 .noir .hint { font-size: 11px; color: var(--ink-soft); margin: 6px 0 0; font-style: italic; }
 .noir h3 {
   font-family: var(--type); text-transform: uppercase; letter-spacing: .16em; font-size: 12px; margin: 16px 0 8px; padding: 0 0 3px;
@@ -37,6 +37,39 @@
 .noir h3::before { content: "▌"; color: var(--red); margin-right: 6px; }
 .noir h3 > :first-child { flex: 1; }
 .noir h3::after { content: ""; position: absolute; left: 0; right: 0; bottom: -5px; border-bottom: 1px solid var(--ink-soft); }
+
+
+/* ===== окно и верхняя панель ===== */
+.noir.application { background: #14110d; border: 1px solid #6f5e45; border-radius: 4px; box-shadow: 0 12px 34px rgba(0,0,0,.7), inset 0 0 0 1px rgba(210,190,150,.08); overflow: hidden; }
+.noir.application .window-header {
+  position: relative; display: flex; flex-wrap: nowrap; height: 40px; min-height: 40px; padding: 0 12px 0 22px; gap: 6px; align-items: center; border: 0; border-bottom: 3px double #0b0907; border-radius: 0;
+  background: var(--noise), repeating-linear-gradient(92deg, rgba(255,255,255,.03) 0 2px, transparent 2px 7px), linear-gradient(#54432f, #2f2519 85%, #261d14);
+  box-shadow: inset 0 1px 0 rgba(225,205,165,.28), 0 3px 8px rgba(0,0,0,.55);
+}
+.noir.application .window-header::before, .noir.application .window-header::after { /* заклёпки */
+  content: ""; position: absolute; top: 50%; width: 8px; height: 8px; margin-top: -4px; border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle at 35% 30%, #d9d0b6, #6c6552 60%, #2b261e); box-shadow: 0 1px 2px rgba(0,0,0,.7);
+}
+.noir.application .window-header::before { left: 7px; }
+.noir.application .window-header::after { right: 3px; display: none; }
+.noir.application .window-header .window-title {
+  flex: 1; margin: 0; font-family: var(--head); font-size: 13px; font-weight: normal; text-transform: uppercase; letter-spacing: .2em; line-height: 40px;
+  color: #e3d9bd; text-shadow: 0 1px 0 #000, 0 0 6px rgba(0,0,0,.6); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.noir.application .window-header .window-title::before { content: "▌"; color: #b3453b; margin-right: 8px; }
+.noir.application .window-header .window-icon, .noir.application .window-header .header-control {
+  flex: none; width: 27px; height: 27px; margin: 0; padding: 0; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; line-height: 1;
+  color: #201a14; border: 1px solid #0b0907; border-radius: 2px; cursor: pointer;
+  background: var(--noise), linear-gradient(#d9cfb3, #b3a681); box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 2px 3px rgba(0,0,0,.5);
+  transition: background .12s, color .12s, transform .08s;
+}
+.noir.application .window-header .window-icon:hover, .noir.application .window-header .header-control:hover { background: linear-gradient(#8f3a31, #6b2a24); color: #f0e6cb; box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 2px 4px rgba(0,0,0,.6); }
+.noir.application .window-header .header-control:active { transform: translateY(1px); }
+.noir.application .window-header .header-control[data-action="close"]:hover { background: linear-gradient(#a3241f, #741813); }
+.noir.application .controls-dropdown, .noir .controls-dropdown { background: #1f1912; border: 1px solid #6f5e45; border-radius: 2px; box-shadow: 4px 4px 0 rgba(0,0,0,.5); }
+.noir.application .controls-dropdown .header-control { width: auto; height: auto; justify-content: flex-start; padding: 5px 12px; color: #e3d9bd; background: transparent; border: 0; box-shadow: none; font-family: var(--type); }
+.noir.application .controls-dropdown .header-control:hover { background: #6b2a24; }
+.noir.application .window-resize-handle { color: #b3a681; opacity: .7; }
 
 /* ===== картонная папка ===== */
 .noir .dossier {
@@ -353,6 +386,42 @@
 .noir .row:hover { border-color: var(--red); background: rgba(235,226,205,.75); transform: translateX(3px); }
 .noir .row .c-name { font-family: var(--head); font-size: 14px; letter-spacing: .04em; display: flex; align-items: center; }
 .noir .row span:not(.c-name) { color: var(--ink-soft); }
+
+
+/* ===== картинки: эмблемы, портреты и силуэты ===== */
+.noir .slot .pic { width: 58px; height: 58px; flex: none; border-radius: 3px; border: 1px solid #0f0c09; box-shadow: 0 3px 6px rgba(0,0,0,.45); }
+.noir .detail .feat { overflow: hidden; }
+.noir .detail .feat .pic.s { float: left; width: 34px; height: 34px; margin: 0 10px 4px 0; border-radius: 3px; border: 1px solid #0f0c09; }
+.noir .opt .pic.xs { width: 22px; height: 22px; vertical-align: middle; margin-right: 8px; border-radius: 2px; border: 1px solid #0f0c09; }
+.noir .opt.on .pic.xs { border-color: var(--paper); }
+.noir .row .thumb { width: 34px; height: 34px; margin-right: 10px; flex: none; border-radius: 3px; border: 1px solid #0f0c09; }
+.noir .origin li .mini { width: 20px; height: 20px; align-self: center; margin-right: 6px; border-radius: 2px; border: 1px solid rgba(15,12,9,.6); flex: none; }
+.noir .origin li .k { flex: 1; }
+.noir .portrait-tag { float: left; width: 104px; height: 104px; margin: 2px 16px 6px 0; border-radius: 4px; border: 1px solid #0f0c09; box-shadow: 3px 4px 8px rgba(0,0,0,.5); transform: rotate(-1.5deg); }
+.noir .desc .clear { clear: both; }
+.noir details.trait .ficon { width: 40px; height: 40px; flex: none; border-radius: 3px; border: 1px solid #0f0c09; box-shadow: 0 2px 3px rgba(0,0,0,.4); }
+.noir .item .thumb { width: 30px; height: 30px; flex: none; border-radius: 3px; border: 1px solid #0f0c09; box-shadow: 0 2px 3px rgba(0,0,0,.4); }
+.noir .item::before { display: none; }
+.noir .item-head .portrait { width: 64px; height: 64px; padding: 0; border-radius: 4px; border: 1px solid #0f0c09; filter: none; background: #14110d; box-shadow: 0 3px 6px rgba(0,0,0,.5); }
+
+
+/* ===== карточки способностей и особенностей ===== */
+.noir .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 6px 0 10px; }
+.noir .card { display: flex; gap: 10px; align-items: flex-start; padding: 8px 10px; border: 1px solid var(--line); background: rgba(235,226,205,.4); box-shadow: 1px 2px 0 rgba(45,34,22,.18); color: var(--ink); cursor: default; position: relative; }
+.noir a.card { cursor: pointer; transition: border-color .12s, background .12s, transform .1s; }
+.noir a.card:hover { border-color: var(--red); background: rgba(235,226,205,.75); transform: translateY(-1px); }
+.noir .card .pic { flex: none; width: 44px; height: 44px; border-radius: 3px; border: 1px solid #0f0c09; box-shadow: 0 2px 4px rgba(0,0,0,.45); }
+.noir .card b { font-family: var(--head); font-size: 13px; letter-spacing: .04em; text-transform: uppercase; }
+.noir .card em { font-style: normal; color: var(--red); font-size: 11px; margin-left: 6px; }
+.noir .card .txt { flex: 1; min-width: 0; }
+.noir .card span { display: block; margin-top: 3px; font-size: 11.5px; line-height: 1.4; color: var(--ink-soft); }
+.noir .card.on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.noir .card.on b, .noir .card.on span { color: var(--paper); }
+.noir .card.on em { color: #e0a28f; }
+.noir .card.on .pic { border-color: var(--paper); }
+.noir .chip.toggle { display: inline-block; margin: 2px 0 10px; padding: 4px 12px; border: 1px dashed var(--ink-soft); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; cursor: pointer; }
+.noir .chip.toggle.on { border-style: solid; border-color: var(--ink); background: rgba(235,226,205,.6); }
+.noir details.trait .src { margin-left: 8px; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); font-weight: normal; }
 
 /* ===== иконки и текстуры (встроенные SVG) ===== */
 .noir .glyph.g-class { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7L2 9.2l7.1-.6z'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7-6.2-3.8-6.2 3.8 1.6-7L2 9.2l7.1-.6z'/%3E%3C/svg%3E"); }

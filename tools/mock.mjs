@@ -6,8 +6,10 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const json = f => JSON.parse(fs.readFileSync(path.join(root, f), "utf8"));
 const { NOIR } = await import(path.join(root, "module/config.mjs"));
 const lang = json("lang/ru.json").NOIR;
-const classes = json("data/classes.json"), species = json("data/species.json"), items = json("data/items.json"), talents = json("data/talents.json");
-const sign = n => (n > 0 ? `+${n}` : `${n}`);
+const classes = json("data/classes.json"), species = json("data/species.json"), items = json("data/items.json"), talents = json("data/talents.json"), bgs = json("data/backgrounds.json");
+
+const featDoc = (f, kind, source, extra = {}) => ({ id: `f-${source}-${f.name}`, type: "feature", name: f.name, img: f.img,
+  system: { kind, source, level: 1, cost: f.cost ?? "", mods: f.mods ?? { evasion: 0, wounds: 0, stress: 0, threshold: 0 }, description: `<p>${f.desc}</p>` }, ...extra });
 
 export function actorContext(tab = "traits", { level = 3, npc = false, gm = true } = {}) {
   const vals = { str: -1, dex: 1, int: 2, con: 0, luck: 1, cha: 1 };
@@ -18,37 +20,41 @@ export function actorContext(tab = "traits", { level = 3, npc = false, gm = true
     evasion: 11, thresholds: { minor: 7, medium: 12 }, biography: "", notes: "", foe: { evasion: 13, minor: 6, medium: 12, wounds: 5 }
   };
   const tabs = ["traits", "abilities", "items", "biography", "notes"];
-  const cls = classes[0];
+  const cls = classes[0], sp = species[3], bg = bgs[0];
   const itemDoc = (n, extra = {}) => ({ id: "id" + n.length, name: n, sort: 0, ...extra });
-  const L = k => k.split(".").reduce((a, p) => a?.[p], lang);
+  const group = (key, list) => ({ name: lang.Kind[key], list: list.map(f => ({ id: "f" + f.name.length, name: f.name, img: f.img, source: f.source, cost: f.cost, desc: `<p>${f.desc}</p>` })) });
   return {
-    actor: { id: "a1b2c3d4e5", name: "Сэм Тёрнер", img: "" }, system: sys, isNpc: npc, level, caseNo: "A1B2C3",
+    actor: { id: "a1b2c3d4e5", name: "Сэм Тёрнер", img: "" }, system: sys, isNpc: npc, level, caseNo: "A1B2C3", isGM: gm, rings: Array(12).fill(0), showXp: gm,
     tabs: tabs.map((id, i) => ({ id, n: String(i + 1).padStart(2, "0"), label: lang.Tab[id], active: id === tab })), t: { [tab]: true },
     abilities: Object.entries(NOIR.abilities).map(([key]) => ({ key, label: lang.Ability[key], value: vals[key],
       tip: `<strong>${lang.Ability[key]}</strong><ul>${lang.AbilityTip[key].split("|").map(x => `<li>${x}</li>`).join("")}</ul>` })),
     ranges: { minor: "1–7", medium: "8–12", heavy: "13+" },
     wounds: Array.from({ length: 8 }, (_, i) => ({ i, on: i < 2 })), stressPips: Array.from({ length: 7 }, (_, i) => ({ i, on: i < 3 })),
-    courageUp: true, isGM: gm, rings: Array(12).fill(0), showXp: gm, xpNeed: 7, xpMarks: Array.from({ length: 7 }, (_, i) => ({ i, on: i < 3 })), canAdvance: false,
+    courageUp: true, xpNeed: 7, xpMarks: Array.from({ length: 7 }, (_, i) => ({ i, on: i < 3 })), canAdvance: false,
     vices: NOIR.vices, drives: NOIR.drives,
-    origin: [{ id: "o1", name: "Эльф", type: "Раса" }, { id: "o2", name: cls.name, type: "Класс" }, { id: "o3", name: "Следователь", type: "Подкласс" }, { id: "o4", name: "Бывший коп", type: "Происхождение" }],
-    traits: [{ id: "t1", name: "Эльф", type: "Раса", desc: species[1].system.description }, { id: "t2", name: "Бывший коп", type: "Происхождение", desc: "<p>Вас вышвырнули из участка — или вы сами ушли.</p>" }],
+    origin: [{ id: "o1", name: sp.name, img: sp.img, type: "Раса" }, { id: "o2", name: cls.name, img: cls.img, type: "Класс" }, { id: "o4", name: bg.name, img: bg.img, type: "Происхождение" }],
+    traits: [{ id: "t1", name: sp.name, img: sp.img, type: "Раса", desc: sp.system.description }, { id: "t2", name: bg.name, img: bg.img, type: "Происхождение", desc: bg.system.description }],
     featureGroups: [
-      { name: cls.name, list: cls.features.slice(0, 5).map(f => ({ id: "f" + f.name.length, name: f.name, level: f.level, cost: f.cost, desc: `<p>${f.desc}</p>` })) },
-      { name: "Приём", list: talents.slice(0, 2).map(t => ({ id: "p" + t.name.length, name: t.name, level: 0, cost: "", desc: t.system.description })) }],
-    weapons: items.filter(i => i.type === "weapon").slice(6, 9).map(i => itemDoc(i.name, { system: i.system })),
-    armor: items.filter(i => i.type === "armor").slice(1, 3).map((i, n) => itemDoc(i.name, { system: { ...i.system, equipped: n === 0 } })),
-    gear: items.filter(i => i.type === "gear").slice(0, 4).map(i => itemDoc(i.name, { system: i.system })),
+      group("trait", [{ ...cls.trait, source: cls.name }]), group("ability", cls.abilities.slice(0, 2).map(a => ({ ...a, source: cls.name }))),
+      group("racial", sp.traits.map(t => ({ ...t, source: sp.name }))), group("origin", [{ ...bg.trait, source: bg.name }]), group("talent", talents.slice(0, 2).map(t => ({ name: t.name, img: t.img, source: "", cost: "", desc: t.system.description })))],
+    weapons: items.filter(i => i.type === "weapon").slice(6, 9).map(i => itemDoc(i.name, { system: i.system, img: i.img })),
+    armor: items.filter(i => i.type === "armor").slice(1, 3).map((i, n) => itemDoc(i.name, { system: { ...i.system, equipped: n === 0 }, img: i.img })),
+    gear: items.filter(i => i.type === "gear").slice(0, 4).map(i => itemDoc(i.name, { system: i.system, img: i.img })),
     bio: "<p>Родился в порту, служил в участке Седьмого округа. Ушёл после дела Рэнсома.</p>",
     notes: "<p>— Спросить у Лу про склад на Док-стрит.<br>— Проверить алиби Хейла.<br>— Купить новую шляпу.</p>"
   };
 }
 
+/** Документы компендиумов в форме, которую ждёт мастер создания. */
 export function wizardDocs() {
-  const mk = (type, i, d) => ({ id: `${type}${i}`, type, name: d.name, system: d.system });
-  const cls = classes.map((c, i) => mk("class", i, { name: c.name, system: { ...c.system, description: `<p>${c.summary}</p>` } }));
-  const sp = species.map((c, i) => mk("species", i, c));
-  const bg = json("data/backgrounds.json").map((c, i) => mk("background", i, c));
-  const gear = items.map((c, i) => mk(c.type, i, { name: c.name, system: c.system }));
-  const features = classes.flatMap(c => c.features.map((f, i) => ({ id: `f${c.name}${i}`, name: f.name, type: "feature", system: { level: f.level, source: c.name, cost: f.cost, description: `<p>${f.desc}</p>` } })));
-  return { class: cls, species: sp, background: bg, gear, features };
+  const mk = (type, i, d) => ({ id: `${type}${i}`, type, name: d.name, img: d.img, system: d.system });
+  const features = [
+    ...classes.flatMap(c => [featDoc(c.trait, "trait", c.name), ...c.abilities.map(a => featDoc(a, "ability", c.name))]),
+    ...species.flatMap(s => s.traits.map(t => featDoc(t, "racial", s.name))), ...bgs.map(b => featDoc(b.trait, "origin", b.name))
+  ];
+  return {
+    class: classes.map((c, i) => mk("class", i, { name: c.name, img: c.img, system: { ...c.system, description: `<p>${c.summary}</p>` } })),
+    species: species.map((s, i) => mk("species", i, s)), background: bgs.map((b, i) => mk("background", i, b)),
+    gear: items.map((c, i) => mk(c.type, i, { name: c.name, img: c.img, system: c.system })), features
+  };
 }

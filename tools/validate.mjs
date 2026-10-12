@@ -9,99 +9,124 @@ const { NOIR } = await import(path.join(root, "module/config.mjs"));
 let errors = 0;
 const err = m => { errors++; console.error("✗", m); };
 const ok = m => console.log("✓", m);
-
 const ABIL = Object.keys(NOIR.abilities);
 const TABS_ = ["class", "species", "background", "stats", "persona", "gear"];
-const classes = json("data/classes.json"), subs = json("data/subclasses.json"), species = json("data/species.json");
-const bgs = json("data/backgrounds.json"), items = json("data/items.json"), talents = json("data/talents.json");
-const system = json("system.json"), lang = json("lang/ru.json");
+
+const classes = json("data/classes.json"), species = json("data/species.json"), bgs = json("data/backgrounds.json");
+const items = json("data/items.json"), talents = json("data/talents.json"), system = json("system.json"), lang = json("lang/ru.json");
 
 ABIL.join() === "str,dex,int,con,luck,cha" || err(`порядок характеристик: ${ABIL}`);
+fs.existsSync(path.join(root, "data/subclasses.json")) && err("data/subclasses.json больше не нужен (подклассов нет)");
+const gear = new Map(items.map(i => [i.name, i]));
 const arr = JSON.stringify([...NOIR.statArray].sort());
 
-// классы
+// --- классы: 1 особенность + 6 способностей, параметры, стартовые предметы
+const CLASSES = ["Гангстер", "Вышибала", "Лекарь", "Оккультист", "Шоумен", "Сыщик", "Взломщик", "Водила", "Наёмник"];
+JSON.stringify(classes.map(c => c.name)) === JSON.stringify(CLASSES) || err(`классы: ${classes.map(c => c.name)}`);
 for (const c of classes) {
   Object.keys(c.system.stats).sort().join() === [...ABIL].sort().join() || err(`${c.name}: набор характеристик`);
   JSON.stringify(Object.values(c.system.stats).sort()) === arr || err(`${c.name}: стартовые характеристики не совпадают с набором ${NOIR.statArray}`);
-  const lv = c.features.map(f => f.level);
-  for (const need of [1, 2, 3, 5, 6, 7, 9, 10]) lv.includes(need) || err(`${c.name}: нет умения ${need} уровня`);
-  const names = [...c.features.map(f => f.name), ...subs.filter(s => s.class === c.name).flatMap(s => s.features.map(f => f.name)), ...talents.map(t => t.name)];
-  names.filter((n, i) => names.indexOf(n) !== i).forEach(n => err(`${c.name}: дубль названия умения «${n}» (ломает автовыдачу)`));
+  c.abilities.length === 6 || err(`${c.name}: способностей ${c.abilities.length}, нужно 6`);
+  c.trait?.name || err(`${c.name}: нет особенности`);
+  for (const k of ["evasion", "wounds", "stress", "threshold"]) typeof c.system.mods[k] === "number" || err(`${c.name}: mods.${k}`);
+  c.system.startItems.forEach(n => gear.has(n) || err(`${c.name}: нет стартового предмета «${n}»`));
+  const names = [c.trait.name, ...c.abilities.map(a => a.name)];
+  new Set(names).size === names.length || err(`${c.name}: повтор названий способностей`);
 }
-const gearAll = new Map(items.map(i => [i.name, i]));
-for (const c of classes) c.system.startItems.forEach(n => gearAll.has(n) || err(`${c.name}: нет стартового предмета «${n}»`));
-[...NOIR.starter.choiceA, ...NOIR.starter.choiceB].forEach(n => gearAll.has(n) || err(`стартовый выбор: нет предмета «${n}»`));
-if (!items.some(i => i.type === "armor" && i.system.kind === "armor" && i.system.price <= NOIR.starter.armorMax)) err("нет стартовой брони");
-if (!items.some(i => i.type === "weapon" && i.system.price <= NOIR.starter.weaponMax)) err("нет стартового оружия");
-ok(`классы: ${classes.length}`);
-// подклассы
-const per = {};
-for (const s of subs) {
-  classes.some(c => c.name === s.class) || err(`подкласс ${s.name}: нет класса ${s.class}`);
-  per[s.class] = (per[s.class] ?? 0) + 1;
-  JSON.stringify(s.features.map(f => f.level)) === "[3,6,9]" || err(`подкласс ${s.name}: уровни умений не 3/6/9`);
-}
-classes.forEach(c => per[c.name] === 2 || err(`${c.name}: подклассов ${per[c.name] ?? 0}, ожидалось 2`));
-ok(`подклассы: ${subs.length}`);
-// расы
-const RACES = ["Человек", "Эльф", "Дворф", "Гоблин", "Крысолюд", "Котари", "Демон", "Голиаф", "Лилипут"];
+ok(`классы: ${classes.length} (особенность + 6 способностей у каждого)`);
+
+// --- расы: 15, по 2 особенности
+const RACES = ["Человек", "Демон", "Голиаф", "Эльф", "Муррены", "Раттены", "Орк", "Дворф", "Гоблин", "Лилипут", "Авианы", "Гнолл", "Тритон", "Огр", "Драконид"];
 JSON.stringify(species.map(s => s.name)) === JSON.stringify(RACES) || err(`расы: ${species.map(s => s.name)}`);
-for (const s of species) Object.keys(s.system.bonuses).sort().join() === [...ABIL].sort().join() || err(`${s.name}: ключи бонусов`);
-// происхождения
-const gearNames = new Set(items.map(i => i.name));
-for (const b of bgs) b.system.startItems.forEach(n => gearNames.has(n) || err(`${b.name}: нет предмета «${n}»`));
-ok(`расы: ${species.length}, происхождения: ${bgs.length}`);
-// предметы
+for (const s of species) {
+  s.traits.length === 2 || err(`${s.name}: особенностей ${s.traits.length}, нужно 2`);
+  for (const t of s.traits) for (const k of ["evasion", "wounds", "stress", "threshold"]) typeof t.mods?.[k] === "number" || err(`${s.name}/${t.name}: mods.${k}`);
+}
+ok(`расы: ${species.length} (по 2 особенности)`);
+
+// --- происхождения: 10, по особенности
+const ORIGINS = ["Правопорядок", "Трущобы", "Богема", "Докарь", "Мафиози", "Консилум", "Кочевник", "Армейский солдат", "Шабаш", "Шпана"];
+JSON.stringify(bgs.map(b => b.name)) === JSON.stringify(ORIGINS) || err(`происхождения: ${bgs.map(b => b.name)}`);
+for (const b of bgs) { b.trait?.name || err(`${b.name}: нет особенности`); b.system.startItems.forEach(n => gear.has(n) || err(`${b.name}: нет предмета «${n}»`)); }
+ok(`происхождения: ${bgs.length}`);
+
+// --- предметы и стартовый набор
 const types = Object.keys(system.documentTypes.Item);
+types.includes("subclass") && err("тип subclass должен быть удалён");
 for (const i of items) {
   types.includes(i.type) || err(`предмет ${i.name}: тип ${i.type}`);
   if (i.type === "weapon" && !["str", "dex", "finesse"].includes(i.system.ability)) err(`${i.name}: ability`);
   if (i.type === "armor" && (i.system.protection == null || i.system.evasion == null)) err(`${i.name}: защита/уклонение`);
 }
 new Set(items.map(i => i.name)).size === items.length || err("дубли названий предметов");
+[...NOIR.starter.choiceA, ...NOIR.starter.choiceB].forEach(n => gear.has(n) || err(`стартовый выбор: нет предмета «${n}»`));
+if (!items.some(i => i.type === "armor" && i.system.kind === "armor" && i.system.price <= NOIR.starter.armorMax)) err("нет стартовой брони");
+if (!items.some(i => i.type === "weapon" && i.system.price <= NOIR.starter.weaponMax)) err("нет стартового оружия");
 ok(`предметы: ${items.length}, приёмы: ${talents.length}`);
 
-// удалённые механики не должны всплывать в тексте
+// --- картинки: у каждого документа своя, файл есть, SVG без скриптов
+const owners = [
+  ...classes.flatMap(c => [[`класс ${c.name}`, c.img], [`особенность ${c.name}/${c.trait.name}`, c.trait.img], ...c.abilities.map(a => [`способность ${c.name}/${a.name}`, a.img])]),
+  ...species.flatMap(s => [[`раса ${s.name}`, s.img], ...s.traits.map(t => [`особенность ${s.name}/${t.name}`, t.img])]),
+  ...bgs.flatMap(b => [[`происхождение ${b.name}`, b.img], [`особенность ${b.name}/${b.trait.name}`, b.trait.img]]),
+  ...talents.map(t => [`приём ${t.name}`, t.img]), ...items.map(i => [`предмет ${i.name}`, i.img])
+];
+const seen = new Set();
+for (const [who, img] of owners) {
+  if (!img) { err(`нет картинки: ${who}`); continue; }
+  if (seen.has(img)) err(`картинка используется дважды: ${img} (${who})`);
+  seen.add(img);
+  const file = path.join(root, img.replace(/^systems\/noir-d20\//, ""));
+  if (!fs.existsSync(file)) { err(`нет файла ${img} (${who})`); continue; }
+  const svg = fs.readFileSync(file, "utf8");
+  if (!svg.startsWith("<svg") || svg.includes("<script") || svg.includes("href=")) err(`подозрительный SVG: ${img}`);
+}
+ok(`картинок: ${seen.size}, у каждого документа своя`);
+
+// --- устаревшие механики не должны всплывать в текстах
 const banned = /(^|\s)(хит(ы|ов|а|ах)?|КД|Жар|навык\w*|спасбросок|спасброски|мастерств\w*|Нерв(а|у|ом|е)?)(\s|[.,;:)]|$)/i;
-const texts = [...classes.flatMap(c => c.features.map(f => [c.name + "/" + f.name, f.desc])), ...subs.flatMap(c => c.features.map(f => [c.name + "/" + f.name, f.desc])),
-  ...talents.map(t => [t.name, t.system.description]), ...species.map(s => [s.name, s.system.description]), ...bgs.map(b => [b.name, b.system.description]),
-  ...items.map(i => [i.name, i.system.description ?? ""])];
+const texts = [
+  ...classes.flatMap(c => [[c.name, c.summary], [c.trait.name, c.trait.desc], ...c.abilities.map(a => [a.name, a.desc])]),
+  ...species.flatMap(s => [[s.name, s.system.description], ...s.traits.map(t => [t.name, t.desc])]),
+  ...bgs.flatMap(b => [[b.name, b.system.description], [b.trait.name, b.trait.desc]]), ...talents.map(t => [t.name, t.system.description]), ...items.map(i => [i.name, i.system.description ?? ""])
+];
 for (const [n, t] of texts) if (banned.test(t)) err(`устаревшая механика в тексте «${n}»`);
 ok("устаревшие механики в текстах не найдены");
 
-// шрифты
+// --- шрифты
 const { FONTS } = await import(path.join(root, "module/fonts.mjs"));
 for (const [role, list] of Object.entries(FONTS)) {
   new Set(list.map(f => f.key)).size === list.length || err(`шрифты ${role}: дубли ключей`);
   list.forEach(f => { if (!f.label) err(`шрифт ${role}/${f.key}: нет подписи`); if (!f.file && f.key !== "same" && !f.css) err(`шрифт ${role}/${f.key}: нет css`); if (f.google && !/^[A-Za-z0-9 ]+$/.test(f.google)) err(`шрифт ${f.key}: имя Google`); });
 }
 ok(`шрифты: ${Object.values(FONTS).map(l => l.length).join(" + ")}`);
-// локализация
+
+// --- локализация
 const flat = (o, p = "") => Object.entries(o).flatMap(([k, v]) => typeof v === "object" ? flat(v, p + k + ".") : [p + k]);
 const keys = new Set(flat(lang));
-const files = ["templates/actor-sheet.hbs", "templates/item-sheet.hbs", "templates/creation.hbs", "templates/picker.hbs", "module/creation.mjs", "module/creation-ctx.mjs", "module/config.mjs", "module/apply.mjs", "module/sheets/actor-sheet.mjs",
-  "module/sheets/item-sheet.mjs", "module/documents/actor.mjs", "module/noir.mjs", "module/fonts.mjs"];
+const files = ["templates/actor-sheet.hbs", "templates/item-sheet.hbs", "templates/creation.hbs", "templates/picker.hbs", "module/creation.mjs", "module/creation-ctx.mjs",
+  "module/config.mjs", "module/apply.mjs", "module/sheets/actor-sheet.mjs", "module/sheets/item-sheet.mjs", "module/documents/actor.mjs", "module/noir.mjs", "module/fonts.mjs"];
 const used = new Set();
 for (const role of ["Type", "Head", "Hand"]) { used.add(`NOIR.Settings.Font${role}`); used.add(`NOIR.Settings.Font${role}Hint`); used.add(`NOIR.Settings.Font${role}Custom`); }
 for (const f of files) for (const m of read(f).matchAll(/["'`](NOIR\.[A-Za-z0-9.]+)["'`]/g)) used.add(m[1]);
 for (const f of files.filter(f => f.endsWith(".hbs"))) for (const m of read(f).matchAll(/localize "([A-Za-z0-9.]+)"/g)) used.add(m[1]);
-for (const m of read("lang/ru.json").matchAll(/"[A-Za-z0-9]+":/g)) { /* ключи читаются ниже */ }
 ["traits", "abilities", "items", "biography", "notes"].forEach(t => used.add(`NOIR.Tab.${t}`));
+TABS_.forEach(t => used.add(`NOIR.Creation.Tab.${t}`));
+["class", "species", "species2", "background", "armor", "main", "sub"].forEach(k => used.add(`NOIR.Pick.${k}`));
+["class", "species", "background", "stats"].forEach(k => used.add(`NOIR.Group.${k}`));
+["trait", "ability", "racial", "origin", "talent"].forEach(k => used.add(`NOIR.Kind.${k}`));
 [1, 2, 3].forEach(n => used.add(`NOIR.Tier.${n}`));
-TABS_.forEach(t => used.add(`NOIR.Creation.Tab.${t}`)); ["class", "species", "background", "armor", "main", "sub"].forEach(k => used.add(`NOIR.Pick.${k}`)); ["class", "species", "background", "stats"].forEach(k => used.add(`NOIR.Group.${k}`));
 ABIL.forEach(a => { used.add(`NOIR.AbilityTip.${a}`); used.add(`NOIR.Ability.${a}`); });
 for (const k of used) keys.has(k) || err(`нет ключа локализации ${k}`);
 for (const t of types) keys.has(`TYPES.Item.${t}`) || err(`нет TYPES.Item.${t}`);
-const raw = read("lang/ru.json").match(/"([A-Za-z0-9]+)":/g) ?? [];
 ok(`ключей локализации проверено: ${used.size}`);
 
-// манифест и типы данных
+// --- манифест и типы данных
 const reg = read("module/noir.mjs");
 for (const t of types) new RegExp(`\\b${t}: \\w+Data`).test(reg) || err(`тип ${t} не зарегистрирован в noir.mjs`);
 fs.existsSync(path.join(root, system.esmodules[0])) || err("нет esmodule");
 system.styles.forEach(s => fs.existsSync(path.join(root, s)) || err(`нет стиля ${s}`));
 system.languages.forEach(l => fs.existsSync(path.join(root, l.path)) || err(`нет языка ${l.path}`));
-// ссылки на скачивание и версия
 const pkgv = json("package.json").version;
 /^\d+\.\d+\.\d+$/.test(system.version) || err(`версия ${system.version}`);
 system.version === pkgv || err(`версии не совпадают: system.json ${system.version}, package.json ${pkgv}`);

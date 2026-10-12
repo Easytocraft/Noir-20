@@ -25,7 +25,7 @@
     {{/if}}
     {{#if isGM}}<button type="button" class="advance-btn" data-action="advance" {{#unless canAdvance}}disabled{{/unless}}>{{localize "NOIR.Advance"}}</button>{{/if}}
     <ul class="origin" data-title="{{localize 'NOIR.CardTitle'}}">
-      {{#each origin}}<li><span class="k">{{type}}</span><a data-item-id="{{id}}" data-action="editItem">{{name}}</a></li>{{/each}}
+      {{#each origin}}<li><img class="mini" src="{{img}}" alt=""><span class="k">{{type}}</span><a data-item-id="{{id}}" data-action="editItem">{{name}}</a></li>{{/each}}
     </ul>
     <div class="fingerprint"></div>
     <div class="case-no">{{localize "NOIR.Case"}} № {{caseNo}}</div>
@@ -88,7 +88,7 @@
         </div>
 
         {{#each traits}}
-        <details class="trait" open><summary>{{type}}: {{name}}</summary><div class="desc">{{{desc}}}</div></details>
+        <details class="trait" open><summary>{{type}}: {{name}}</summary><div class="desc"><img class="portrait-tag" src="{{img}}" alt="{{name}}">{{{desc}}}<div class="clear"></div></div></details>
         {{/each}}
       {{/if}}
 
@@ -97,7 +97,7 @@
         <h3><span>{{name}}</span></h3>
         {{#each list}}
         <details class="trait" data-item-id="{{id}}">
-          <summary>{{#if level}}<span class="lv">{{level}}</span>{{/if}}{{name}}{{#if cost}} <em>({{cost}})</em>{{/if}}
+          <summary><img class="ficon" src="{{img}}" alt="">{{name}}{{#if cost}} <em>({{cost}})</em>{{/if}}{{#if source}} <span class="src">{{source}}</span>{{/if}}
             <span class="acts"><a data-action="useItem" title="{{localize 'NOIR.Use'}}">▶</a><a data-action="editItem" title="{{localize 'NOIR.Edit'}}">✎</a><a data-action="deleteItem" title="{{localize 'NOIR.Delete'}}">✕</a></span></summary>
           <div class="desc">{{{desc}}}</div>
         </details>
@@ -111,7 +111,7 @@
         <h3><span>{{localize "NOIR.Weapons"}}</span><a data-action="createItem" data-type="weapon">＋</a></h3>
         {{#each weapons}}
         <div class="item" data-item-id="{{id}}">
-          <a class="iname" data-action="editItem">{{name}}</a>
+          <img class="thumb" src="{{img}}" alt=""><a class="iname" data-action="editItem">{{name}}</a>
           <span class="chip">{{system.damage}}</span><span>{{system.damageType}}</span>
           {{#if system.ammo.max}}<span>{{system.ammo.value}}/{{system.ammo.max}}</span><a data-action="reload" title="{{localize 'NOIR.Reload'}}">⟳</a>{{/if}}
           <a data-action="rollAttack">{{localize "NOIR.Attack"}}</a>
@@ -122,7 +122,7 @@
         <h3><span>{{localize "NOIR.Armor"}}</span><a data-action="createItem" data-type="armor">＋</a></h3>
         {{#each armor}}
         <div class="item" data-item-id="{{id}}">
-          <a class="iname" data-action="editItem">{{name}}</a>
+          <img class="thumb" src="{{img}}" alt=""><a class="iname" data-action="editItem">{{name}}</a>
           <span>{{localize "NOIR.Protection"}} {{system.protection}} · {{localize "NOIR.Evasion"}} {{system.evasion}}</span>
           <a data-action="toggleEquip" class="{{#if system.equipped}}on{{/if}}">{{#if system.equipped}}● {{localize "NOIR.Equipped"}}{{else}}○{{/if}}</a>
           <a data-action="deleteItem">✕</a>
@@ -131,7 +131,7 @@
         <h3><span>{{localize "NOIR.Gear"}}</span><a data-action="createItem" data-type="gear">＋</a></h3>
         {{#each gear}}
         <div class="item" data-item-id="{{id}}">
-          <a class="iname" data-action="editItem">{{name}}</a>
+          <img class="thumb" src="{{img}}" alt=""><a class="iname" data-action="editItem">{{name}}</a>
           <span>×{{system.quantity}}</span>
           <a data-action="useItem">{{localize "NOIR.Use"}}</a>
           <a data-action="deleteItem">✕</a>

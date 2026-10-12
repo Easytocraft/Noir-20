@@ -19,9 +19,9 @@ export class NoirItemSheet extends HandlebarsApplicationMixin(ItemSheetV2) {
     ctx.hasPrice = ["weapon", "armor", "gear"].includes(doc.type);
     const L = k => game.i18n.localize(k), sys = doc.system;
     ctx.abilityList = Object.entries(NOIR.abilities).map(([key, label]) => ({
-      key, label: L(label), value: sys.stats?.[key], bonus: sys.bonuses?.[key]
+      key, label: L(label), value: sys.stats?.[key]
     }));
-    ctx.weaponAbilities = NOIR.weaponAbilities; ctx.armorKinds = NOIR.armorKinds;
+    ctx.featureKinds = NOIR.featureKinds; ctx.weaponAbilities = NOIR.weaponAbilities; ctx.armorKinds = NOIR.armorKinds;
     ctx.enriched = await foundry.applications.ux.TextEditor.implementation.enrichHTML(doc.system.description, { relativeTo: doc });
     return ctx;
   }
