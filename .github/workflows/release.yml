@@ -1,0 +1,32 @@
+# Релиз: на GitHub создайте релиз с тегом vX.Y.Z (версия должна совпадать с system.json) — workflow соберёт noir-d20.zip и приложит system.json.
+name: Release
+on:
+  release:
+    types: [published]
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm install
+      - run: npm test
+      - name: Тег должен совпадать с версией в system.json
+        run: |
+          [ "v$(jq -r .version system.json)" = "$GITHUB_REF_NAME" ] || { echo "Тег $GITHUB_REF_NAME не совпадает с версией $(jq -r .version system.json)"; exit 1; }
+      - name: Собрать компендиумы (если не получится — система создаст их сама при первом запуске)
+        continue-on-error: true
+        run: npm run packs
+      - name: Собрать архив
+        run: |
+          FILES="system.json LICENSE README.md CHANGELOG.md module templates styles lang data fonts assets"
+          [ -d packs ] && FILES="$FILES packs"
+          zip -r noir-d20.zip $FILES
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            system.json
+            noir-d20.zip

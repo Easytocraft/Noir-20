@@ -120,7 +120,7 @@ const CELLS = (features) => ({
 export function buildPicker(kind, docs, L, features = []) {
   const cells = CELLS(features)[kind];
   return {
-    kind, cols: COLS[kind].map(L),
+    kind, cols: COLS[kind].map(L), n: COLS[kind].length,
     rows: docs.map(d => ({ id: d.id, name: d.name, img: d.img, lname: d.name.toLowerCase(), glyph: kind, cols: cells(d) }))
   };
 }

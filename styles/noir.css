@@ -88,9 +88,9 @@
 
 /* ===== левая колонка ===== */
 .noir .side { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; overflow-x: hidden; padding: 32px 6px 6px 4px; margin: -26px -4px 0 -4px; position: relative; z-index: 2; }
-.noir .photo { position: relative; transform: rotate(-2deg); padding-top: 4px; }
-.noir .photo .frame { position: relative; background: #d8d0bc; padding: 9px; border: 1px solid #b3a98f; box-shadow: 0 7px 14px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.35); }
-.noir .photo img { width: 100%; aspect-ratio: 1 / .9; object-fit: cover; border: 1px solid #5d5444; display: block; cursor: pointer; background: radial-gradient(ellipse at 50% 40%, #46403a, #1d1a17 75%); filter: grayscale(.9) sepia(.35) contrast(1.05) brightness(.82); }
+.noir .photo { position: relative; transform: rotate(-2deg); padding-top: 4px; text-align: center; }
+.noir .photo .frame { position: relative; display: inline-block; max-width: 100%; vertical-align: top; background: #d8d0bc; padding: 9px; border: 1px solid #b3a98f; box-shadow: 0 7px 14px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.35); }
+.noir .photo img { display: block; width: auto; height: auto; max-width: 100%; max-height: 310px; min-width: 150px; min-height: 150px; object-fit: contain; border: 1px solid #5d5444; cursor: pointer; background: radial-gradient(ellipse at 50% 40%, #46403a, #1d1a17 75%); filter: grayscale(.9) sepia(.35) contrast(1.05) brightness(.82); }
 .noir .photo .c { position: absolute; width: 22px; height: 22px; background: #14110d; z-index: 2; }
 .noir .photo .c.tl { top: 3px; left: 3px; clip-path: polygon(0 0, 100% 0, 0 100%); }
 .noir .photo .c.tr { top: 3px; right: 3px; clip-path: polygon(0 0, 100% 0, 100% 100%); }
@@ -125,11 +125,11 @@
 .noir .advance-btn:disabled { color: #4f4535; border-color: #4f4535; opacity: .55; cursor: not-allowed; }
 .noir .origin {
   list-style: none; margin: 0; padding: 0 10px 6px; position: relative; background-color: #d9d0b8; border: 1px solid #aea386; box-shadow: 0 3px 6px rgba(0,0,0,.45); transform: rotate(.7deg);
-  background-image: linear-gradient(to bottom, transparent 27px, rgba(74,88,102,.3) 27px, rgba(74,88,102,.3) 28px, transparent 28px); background-size: 100% 25px; background-position: 0 3px;
+  background-image: linear-gradient(to bottom, transparent 31px, rgba(74,88,102,.3) 31px, rgba(74,88,102,.3) 32px, transparent 32px); background-size: 100% 32px; background-position: 0 3px;
 }
 .noir .origin::before { content: attr(data-title); display: block; margin: 0 -10px 4px; padding: 4px 10px; font-size: 10px; letter-spacing: .22em; text-transform: uppercase; border-bottom: 2px solid #8d443b; color: var(--ink-soft); background: #d9d0b8; }
 .noir .origin::after { content: ""; position: absolute; top: -9px; right: 12px; width: 52px; height: 17px; background: rgba(205,192,150,.5); border: 1px solid rgba(140,125,80,.3); transform: rotate(6deg); }
-.noir .origin li { display: flex; justify-content: space-between; gap: 8px; height: 25px; align-items: flex-end; padding-bottom: 2px; }
+.noir .origin li { display: flex; justify-content: space-between; gap: 8px; height: 32px; align-items: flex-end; padding-bottom: 2px; }
 .noir .origin .k { color: var(--ink-soft); font-size: 10px; text-transform: uppercase; letter-spacing: .06em; }
 .noir .origin a { font-family: var(--hand); font-size: 14px; color: #263044; }
 .noir .origin a:hover { color: var(--red); }
@@ -377,9 +377,9 @@
 .noir .search { position: relative; margin: 12px 14px 8px; }
 .noir .search input { width: 100%; box-sizing: border-box; height: 34px; padding: 0 36px 0 12px; border: 1px solid var(--ink-soft); font-size: 13px; }
 .noir .search .glyph { position: absolute; right: 10px; top: 8px; margin: 0; }
-.noir .thead, .noir .row { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(70px, 1fr); }
+.noir .thead, .noir .row { display: grid; grid-template-columns: minmax(190px, 1.5fr) repeat(var(--n, 2), minmax(0, 1fr)); column-gap: 12px; }
 .noir .thead { margin: 0 14px; padding: 6px 10px; border-top: 2px solid var(--ink); border-bottom: 2px solid var(--ink); font-family: var(--head); text-transform: uppercase; letter-spacing: .12em; font-size: 11px; }
-.noir .thead .c-name, .noir .row .c-name { grid-column: 1; min-width: 160px; }
+.noir .thead .c-name, .noir .row .c-name { grid-column: 1; min-width: 0; }
 .noir .picker-box .rows { flex: 1; overflow-y: auto; padding: 8px 14px 14px; }
 .noir .row { align-items: center; padding: 8px 10px; margin-bottom: 6px; border: 1px solid var(--line); background: rgba(235,226,205,.4); cursor: pointer; transition: transform .1s, border-color .1s; font-size: 12px; }
 .noir .row[hidden] { display: none; }
@@ -389,13 +389,14 @@
 
 
 /* ===== картинки: эмблемы, портреты и силуэты ===== */
+.noir .pic, .noir .thumb, .noir .ficon, .noir .mini, .noir .portrait-tag, .noir .portrait { object-fit: contain; background: #14110d; }
 .noir .slot .pic { width: 58px; height: 58px; flex: none; border-radius: 3px; border: 1px solid #0f0c09; box-shadow: 0 3px 6px rgba(0,0,0,.45); }
 .noir .detail .feat { overflow: hidden; }
 .noir .detail .feat .pic.s { float: left; width: 34px; height: 34px; margin: 0 10px 4px 0; border-radius: 3px; border: 1px solid #0f0c09; }
 .noir .opt .pic.xs { width: 22px; height: 22px; vertical-align: middle; margin-right: 8px; border-radius: 2px; border: 1px solid #0f0c09; }
 .noir .opt.on .pic.xs { border-color: var(--paper); }
 .noir .row .thumb { width: 34px; height: 34px; margin-right: 10px; flex: none; border-radius: 3px; border: 1px solid #0f0c09; }
-.noir .origin li .mini { width: 20px; height: 20px; align-self: center; margin-right: 6px; border-radius: 2px; border: 1px solid rgba(15,12,9,.6); flex: none; }
+.noir .origin li .mini { width: 26px; height: 26px; align-self: center; margin-right: 6px; border-radius: 2px; border: 1px solid rgba(15,12,9,.6); flex: none; }
 .noir .origin li .k { flex: 1; }
 .noir .portrait-tag { float: left; width: 104px; height: 104px; margin: 2px 16px 6px 0; border-radius: 4px; border: 1px solid #0f0c09; box-shadow: 3px 4px 8px rgba(0,0,0,.5); transform: rotate(-1.5deg); }
 .noir .desc .clear { clear: both; }
